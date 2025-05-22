@@ -11,18 +11,23 @@
 
 📱 Telegram Promo-Bot (Python / Node.js)
 │
+
 ├─ 💬 Telegram Bot API (z. B. via aiogram / node-telegram-bot-api)
-│
+
 ├─ 🧠 Logik / Bot-Server (z. B. mit FastAPI, Express.js oder Flask)
+
 │ ├─ Webhook-Handler für Telegram-Events
+
 │ ├─ Stripe-Webhook-Handler für Payment Updates
+
 │ └─ API-Endpunkte für Status & Rechnung
-│
+
 ├─ 🗃️ Datenbank (z. B. SQLite oder PostgreSQL bei Bedarf)
+
 │ ├─ Nutzer, Bestellungen, Produkte, Kanäle
-│
+
 ├─ 💳 Zahlungsanbieter (z. B. Stripe via Telegram Bot Payments)
-│
+
 └─ 📤 E-Mail-Service (z. B. SMTP, Mailjet, Resend) für Rechnungen
 
 ## Bot-Flow: Beispiel produkt anlegen → bestellen → bezahlen → status
@@ -30,18 +35,20 @@
 ### Für Verkäufer (Kanalbetreiber):
 
 /verknüpfen_meinen_shop
-→ "Bitte gib deinen Shop-Namen ein:"
+
+- "Bitte gib deinen Shop-Namen ein:"
 
 /produkt_anlegen
-→ "Name des Produkts?"
-→ "Beschreibung?"
-→ "Normalpreis?"
-→ "Rabattpreis (für Telegram)?"
-→ "Bild-Link oder Bild hochladen"
-→ "Maximale Anzahl Bestellungen?"
-→ "Gültig bis (optional)?"
-→ Bot generiert Link/Button:
-t.me/PromoBestellBot?start=produkt123
+
+- "Name des Produkts?"
+- "Beschreibung?"
+- "Normalpreis?"
+- "Rabattpreis (für Telegram)?"
+- "Bild-Link oder Bild hochladen"
+- "Maximale Anzahl Bestellungen?"
+- "Gültig bis (optional)?"
+- Bot generiert Link/Button:
+  t.me/PromoBestellBot?start=produkt123
 
 ### Für Käufer:
 
@@ -51,21 +58,16 @@ t.me/PromoBestellBot?start=produkt123
 
 2. Bot fragt:
 
-„Möchtest du Wolkenatlas zum Sonderpreis kaufen?“
-
-„Gib deine E-Mail ein:“
-
-„Lieferadresse?“
-
-„Zahlung jetzt abschließen?“ → Telegram-Zahlung mit Stripe
+- „Möchtest du Wolkenatlas zum Sonderpreis kaufen?“
+- „Gib deine E-Mail ein:“
+- „Lieferadresse?“
+- „Zahlung jetzt abschließen?“ → Telegram-Zahlung mit Stripe
 
 3. Nach erfolgreicher Zahlung:
 
-Bot: „Vielen Dank! Deine Bestellung wurde aufgenommen.“
-
-Rechnung wird gesendet
-
-Command: /meine_bestellungen
+- Bot: „Vielen Dank! Deine Bestellung wurde aufgenommen.“
+- Rechnung wird gesendet
+- Command: /meine_bestellungen
 
 ### Käufer-Commands:
 
@@ -91,17 +93,12 @@ Command: /meine_bestellungen
 
 ### Überblick
 
-📱 Telegram User
-↓
-🤖 Telegram Bot API → API Gateway
-↓
-🧠 Lambda Functions
-↓
-🗃️ Amazon DynamoDB
-↓
-💳 Stripe (Payments)
-↓
-📧 SES (E-Mails mit Rechnung)
+- 📱 Telegram User
+- 🤖 Telegram Bot API → API Gateway
+- 🧠 Lambda Functions
+- 🗃️ Amazon DynamoDB
+- 💳 Stripe (Payments)
+  📧 SES (E-Mails mit Rechnung)
 
 ### AWS-Komponenten im Detail
 
