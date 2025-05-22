@@ -1,0 +1,56 @@
+flowchart TD
+    U[User öffnet Chat / klickt Button]
+
+    subgraph ECS[AWS ECS - aiogram Bot]
+        A1{Deep Link vorhanden?}
+        A2[Promo-Daten aus DynamoDB laden]
+        A3[Neutrale Begrüßung anzeigen]
+        A4[Promo anzeigen]
+        A5[User wählt Aktion]
+        A6{Aktion: Bestellung?}
+        A7[Bestellanforderung an Stripe senden]
+        A8[Warte auf Zahlungs-Webhook]
+        A9[Zahlungsstatus in DynamoDB speichern]
+        A10[Medien / Rechnung aus S3 laden]
+        A11[Rechnung an User senden]
+        A12[Andere Aktionen bearbeiten]
+    end
+
+    subgraph Stripe
+        SH[Stripe Payment Service]
+        LH[AWS Lambda Stripe Webhook]
+    end
+
+    subgraph DB
+        D[DynamoDB]
+    end
+
+    subgraph Storage
+        S3[S3 - Medien & Rechnungen]
+    end
+
+    %% Ablauf
+    U --> ECS
+    ECS --> A1
+    A1 -- Ja --> A2
+    A1 -- Nein --> A3
+
+    A2 --> A4
+    A3 --> A4
+
+    A4 --> A5
+    A5 --> A6
+
+    A6 -- Ja --> A7
+    A6 -- Nein --> A12
+
+    A7 --> SH
+    SH --> LH
+    LH --> A9
+    A9 --> D
+    A5 --> A10
+    A10 --> S3
+    A10 --> A11
+    A11 --> U
+
+    A12 --> U

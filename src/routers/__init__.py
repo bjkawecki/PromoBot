@@ -1,7 +1,7 @@
-from routers.callbacks import callbacks_router
 from routers.commands import commands_router
+from routers.handlers import handlers_router
 
 all_routers = [
     commands_router,
-    callbacks_router,
+    handlers_router,
 ]
