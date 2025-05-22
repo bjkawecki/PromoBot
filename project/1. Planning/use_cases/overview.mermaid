@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant Nutzer
+    participant TelegramBot
+    participant Stripe
+    participant DB
+    participant Verkäufer
+
+    %% Bestellung starten
+    Nutzer->>TelegramBot: Klick auf "Jetzt bestellen"
+    TelegramBot->>Nutzer: Fragt Name, Adresse, E-Mail ab
+    Nutzer->>TelegramBot: Gibt Daten ein
+    TelegramBot->>Stripe: Erzeuge Checkout-Session
+    Stripe-->>TelegramBot: Checkout-URL
+    TelegramBot->>Nutzer: Sende Stripe-Zahlungslink
+
+    %% Zahlung
+    Nutzer->>Stripe: Bezahlt Bestellung
+    Stripe->>TelegramBot: Webhook: Zahlung bestätigt
+    TelegramBot->>DB: Speichert Bestellung + Status "bezahlt"
+    TelegramBot->>Nutzer: Bestellbestätigung + Status-Link
+    TelegramBot->>Verkäufer: Nachricht mit Bestellinfo
+
+    %% Status-Änderung durch Verkäufer
+    Verkäufer->>TelegramBot: /orders → Bestellung auswählen
+    Verkäufer->>TelegramBot: Setze Status auf "versendet"
+    TelegramBot->>DB: Aktualisiere Bestellstatus
+    TelegramBot->>Nutzer: Info: Bestellung wurde versendet

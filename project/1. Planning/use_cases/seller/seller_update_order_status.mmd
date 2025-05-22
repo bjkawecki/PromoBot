@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant Seller
+    participant TelegramBot
+    participant Backend
+    participant DB
+    participant Buyer
+
+    Seller->>TelegramBot: /bestellungen oder „Bestellungen anzeigen“
+    TelegramBot->>Backend: Abfrage Verkäufer-ID → Bestellungen laden
+    Backend->>DB: Alle Bestellungen für diesen Verkäufer abrufen
+    DB-->>Backend: Liste mit Bestellungen
+    Backend->>TelegramBot: Liste an Verkäufer senden
+    TelegramBot->>Seller: Auswahl anzeigen mit Buttons („Versendet“, „Storniert“, etc.)
+
+    Seller->>TelegramBot: Klickt z. B. „Versendet“
+    TelegramBot->>Backend: Bestell-ID + neuer Status
+    Backend->>DB: Status aktualisieren (z. B. „versendet“ + Zeitstempel)
+    Backend->>TelegramBot: Bestätigung an Verkäufer senden
+    TelegramBot->>Seller: Status erfolgreich aktualisiert
+
+    Note right of TelegramBot: (Optional)
+    TelegramBot->>Buyer: 📦 Deine Bestellung wurde versendet!

@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant Stripe
+    participant WebhookEndpoint
+    participant Backend
+    participant DB
+    participant TelegramBot
+    participant User
+
+    Stripe-->>WebhookEndpoint: Webhook „payment_intent.succeeded“
+    WebhookEndpoint->>Backend: Verarbeite Webhook
+    Backend->>DB: Bestellung aktualisieren (Status: „bezahlt“, Zeitstempel)
+    Backend->>TelegramBot: Sende Bestätigung an Käufer
+    TelegramBot->>User: ✅ Danke für deinen Kauf! Bestellung ist eingegangen.
+    TelegramBot->>User: 📦 Du wirst benachrichtigt, sobald dein Produkt versendet wurde.
+    TelegramBot->>User: 🔎 [Button: „Bestellung ansehen“]

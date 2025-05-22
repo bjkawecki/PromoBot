@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant Seller
+    participant TelegramBot
+    participant Backend
+    participant DB
+
+    Seller->>TelegramBot: /neue_promo oder „Neue Promo“-Button
+    TelegramBot->>Seller: Formular senden (Produktname, Bild, Preis, Rabatt, Link)
+    Seller->>TelegramBot: Formular ausgefüllt zurücksenden
+    TelegramBot->>Backend: Promo-Daten übermitteln
+    Backend->>DB: Promo speichern (mit Status: „aktiv“, Zeitstempel)
+    Backend->>TelegramBot: Bestätigungsnachricht + Vorschau-Link
+    TelegramBot->>Seller: ✅ Promo erfolgreich angelegt! [Button: „Jetzt posten“]

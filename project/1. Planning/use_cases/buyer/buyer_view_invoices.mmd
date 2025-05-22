@@ -1,0 +1,8 @@
+flowchart TD
+    A[Käufer sendet Befehl /rechnung] --> B{Hat Käufer Bestellungen?}
+    B -- Ja --> C[Liste der Bestellungen anzeigen]
+    C --> D[Käufer wählt Bestellung aus]
+    D --> E{Rechnung verfügbar?}
+    E -- Ja --> F[Rechnung als PDF- oder HTML-Link senden]
+    E -- Nein --> G[Nachricht: Rechnung wird erstellt, bitte später erneut versuchen]
+    B -- Nein --> H[Nachricht: Keine Bestellungen gefunden]
