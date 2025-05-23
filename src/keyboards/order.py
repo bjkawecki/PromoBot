@@ -16,7 +16,7 @@ def get_finish_collect_order_details_keyboard() -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(
                     text="✅ Weiter zur Zahlung",
-                    callback_data="start_payment",
+                    callback_data="continue_to_payment",
                 )
             ],
             [
