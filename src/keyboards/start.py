@@ -32,7 +32,7 @@ def get_main_menu_deeplink() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="✅ Bestellung starten", callback_data="enter_order_info"
+                    text="✅ Bestellung starten", callback_data="collect_order_details"
                 ),
             ],
             [

@@ -8,3 +8,4 @@ class OrderState(StatesGroup):
     state = State()
     quantity = State()
     confirm = State()
+    edit_mode = State()
