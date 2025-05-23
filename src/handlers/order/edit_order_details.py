@@ -15,7 +15,7 @@ router = Router()
 @router.callback_query(F.data == "edit_order_details")
 async def edit_order_details(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(
-        "*Anpassung deiner Angaben\\.*\n\n*Was möchtest du ändern?*\n\n",
+        "*📝 Änderung deiner Eingaben\\.*\n\nWas möchtest du ändern?",
         reply_markup=get_edit_order_details_keyboard(),
         parse_mode="MarkdownV2",
     )
@@ -50,7 +50,7 @@ async def edit_city(callback: CallbackQuery, state: FSMContext):
     await state.set_state(OrderState.city)
     await state.update_data(edit_mode=True)
     await callback.message.edit_text(
-        "PLZ und Stadt ändern:",
+        "PLZ und Ort ändern:",
         reply_markup=get_edit_order_details_back_to_summary_keyboard(),
         parse_mode="MarkdownV2",
     )
@@ -68,6 +68,6 @@ async def edit_quantity(callback: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "back_to_summary")
-async def back_to_summary_callback(callback: CallbackQuery, state: FSMContext):
+async def back_to_summary(callback: CallbackQuery, state: FSMContext):
     await show_order_summary(callback, state)
     await callback.answer()

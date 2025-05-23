@@ -19,7 +19,7 @@ def get_main_menu_neutral() -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="❓ Hilfe / Support", callback_data="help_support"
+                    text="❓ Hilfe / Support", callback_data="display_bot_help_options"
                 ),
             ],
         ]
@@ -37,14 +37,24 @@ def get_main_menu_deeplink() -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="🔍 Produktdetails", callback_data="get_product_description"
+                    text="🔍 Produktbeschreibung",
+                    callback_data="display_product_description",
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="❓ Hilfe", callback_data="get_order_support"
+                    text="❓ Hilfe", callback_data="display_bot_help_options"
                 ),
             ],
+        ]
+    )
+    return keyboard
+
+
+def get_back_to_start_keyboard() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Zurück", callback_data="back_to_start")]
         ]
     )
     return keyboard

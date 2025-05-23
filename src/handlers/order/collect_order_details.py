@@ -35,7 +35,7 @@ async def process_name(message: Message, state: FSMContext):
     else:
         name = data.get("name")
         await message.answer(
-            f"*Eingabe*\n\nName: {name}\n\n*Straße und Hausnummer:*",
+            f"*📫 Adresseingabe*\n\nName: {name}\n\n*Straße und Hausnummer:*",
             reply_markup=get_cancel_collect_order_details_keyboard(),
             parse_mode="MarkdownV2",
         )
@@ -54,7 +54,7 @@ async def process_street_adress(message: Message, state: FSMContext):
         name = data.get("name")
         street_address = data.get("street_address")
         await message.answer(
-            f"*Eingabe*\n\nName: {name}\nStraße: {street_address}\n\n*Postleitzahl und Stadt:*",
+            f"*📫 Adresseingabe*\n\nName: {name}\nStraße: {street_address}\n\n*Postleitzahl und Ort:*",
             reply_markup=get_cancel_collect_order_details_keyboard(),
             parse_mode="MarkdownV2",
         )
@@ -74,7 +74,7 @@ async def get_city(message: Message, state: FSMContext):
         street_address = data.get("street_address")
         city = data.get("city")
         await message.answer(
-            f"*Eingabe*\n\nName: {name}\nStraße: {street_address}\nStadt: {city}\n\n*Wie viele Stück möchtest du bestellen?*",
+            f"*📫 Adresseingabe*\n\nName: {name}\nStraße: {street_address}\nOrt: {city}\n\n*Wie viele Stück möchtest du bestellen?*",
             reply_markup=get_cancel_collect_order_details_keyboard(),
             parse_mode="MarkdownV2",
         )
@@ -98,18 +98,19 @@ async def confirm_order(callback: CallbackQuery, state: FSMContext):
 
 async def show_order_summary(destination, state: FSMContext):
     data = await state.get_data()
-    name = data.get("name")
-    street_address = data.get("street_address")
-    city = data.get("city")
-    quantity = data.get("quantity")
+    name = data.get("name", "_Name nicht angegeben_")
+    street_address = data.get("street_address", "_Straße/Hausnummer nicht angegeben_")
+    city = data.get("city", "_PLZ/Ort nicht angegeben_")
+    quantity = data.get("quantity", "1")
 
     summary = (
-        f"*Bestellung:*\n\n"
-        f"{quantity}x Wald\\-T\\-Shirt\n\n"
-        f"*Empfänger:*\n\n"
+        f"*📦 Bestellübersicht*\n\n"
+        f"{quantity} x Wald\\-T\\-Shirt\n\n"
+        f"*📫 Anschrift des Empfängers:*\n\n"
         f"{name}\n"
         f"{street_address}\n"
         f"{city}\n\n"
+        f"*Fahre fort, wenn alle Angaben korrekt sind\\.*"
     )
 
     if isinstance(destination, CallbackQuery):
