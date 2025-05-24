@@ -5,12 +5,12 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from config import TOKEN
 from middleware import RoleMiddleware
-from routers import handlers_router
+from routers import routers
 
 dp = Dispatcher(storage=MemoryStorage())
 dp.message.middleware(RoleMiddleware())
 bot = Bot(token=TOKEN)
-dp.include_router(handlers_router)
+dp.include_router(routers)
 
 
 async def main():

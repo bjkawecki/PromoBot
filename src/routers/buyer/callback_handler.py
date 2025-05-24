@@ -2,6 +2,7 @@ from aiogram import F, Router
 from aiogram.types import CallbackQuery
 
 from keyboards.help import get_back_to_help_options_keyboard, get_help_options_keyboard
+from keyboards.start import get_back_to_start_keyboard
 from messages.help import (
     data_privacy_text,
     how_to_get_order_status_text,
@@ -46,6 +47,16 @@ async def data_privacy(callback: CallbackQuery):
     await callback.message.answer(
         data_privacy_text,
         reply_markup=get_back_to_help_options_keyboard(),
+        parse_mode="MarkdownV2",
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data == "display_product_description")
+async def display_product_description(callback: CallbackQuery):
+    await callback.message.answer(
+        "*🔍 Produktbeschreibung*\n\n_Hier kann man mehr über das beworbene Produkt erfahren\\._",
+        reply_markup=get_back_to_start_keyboard(),
         parse_mode="MarkdownV2",
     )
     await callback.answer()
