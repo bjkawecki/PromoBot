@@ -46,6 +46,11 @@ def get_main_menu_deeplink() -> InlineKeyboardMarkup:
                     text="❓ Hilfe", callback_data="display_bot_help_options"
                 ),
             ],
+            [
+                InlineKeyboardButton(
+                    text="Sende Werbenachricht", callback_data="send_product_promo"
+                )
+            ],
         ]
     )
     return keyboard
