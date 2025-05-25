@@ -54,12 +54,3 @@ def get_main_menu_deeplink() -> InlineKeyboardMarkup:
         ]
     )
     return keyboard
-
-
-def get_back_to_start_keyboard() -> InlineKeyboardMarkup:
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="Zurück", callback_data="back_to_start")]
-        ]
-    )
-    return keyboard

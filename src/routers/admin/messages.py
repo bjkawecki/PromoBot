@@ -12,7 +12,8 @@ router = Router()
 
 @router.message(AddSeller.waiting_for_username)
 async def save_seller_username(message: types.Message, state: FSMContext):
-    telegram_user_id = int(message.text.strip())
+    telegram_user_id = message.text.strip()
+    telegram_user_id = int(telegram_user_id)
     seller_obj = {
         "telegram_user_id": telegram_user_id,
         "active": True,

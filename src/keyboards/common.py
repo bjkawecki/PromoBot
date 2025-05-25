@@ -5,12 +5,20 @@ from keyboards.buyer import buyer_keyboard
 from keyboards.seller import seller_keyboard
 
 
-def get_back_to_start_keyboard() -> InlineKeyboardMarkup:
+def get_abort_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(text="Abbrechen", callback_data="back_to_start"),
             ],
+        ]
+    )
+
+
+def get_main_menu_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Zum Hauptmenu", callback_data="back_to_start")]
         ]
     )
 

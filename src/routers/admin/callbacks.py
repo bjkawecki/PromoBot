@@ -15,7 +15,7 @@ from keyboards.admin import (
     get_seller_detail_keyboard,
     get_seller_list_keyboard,
 )
-from keyboards.common import get_back_to_start_keyboard
+from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
 from misc import format_datetime
 from routers.admin.states import AddSeller
 
@@ -32,7 +32,7 @@ async def add_seller_callback(callback: CallbackQuery, state: FSMContext):
         "*Neuer Verkäufer hinzufügen*\n\n"
         "Bitte sende die Telegram\\-Nutzer\\-ID des neuen Verkäufers:",
         parse_mode="MarkdownV2",
-        reply_markup=get_back_to_start_keyboard(),
+        reply_markup=get_abort_keyboard(),
     )
     await callback.answer()
     await state.set_state(AddSeller.waiting_for_username)
@@ -45,9 +45,7 @@ async def display_sellers_callback(callback: CallbackQuery):
         response = table.scan()
         seller_list = response.get("Items", [])
         if not seller_list:
-            await callback.message.answer(
-                "❌ Es sind noch keine Verkäufer registriert."
-            )
+            await callback.answer("❌ Es sind noch keine Verkäufer registriert.")
             return
 
         keyboard = get_seller_list_keyboard(seller_list)
@@ -55,7 +53,6 @@ async def display_sellers_callback(callback: CallbackQuery):
             "Wähle einen Verkäufer aus:", reply_markup=keyboard
         )
         await callback.answer()
-
     except Exception as e:
         await callback.message.answer("⚠️ Fehler beim Abrufen der Verkäufer.")
         print(f"[ERROR] {e}")
@@ -72,7 +69,7 @@ async def seller_detail_callback(callback: CallbackQuery):
 
     msg = (
         f"<b>Verkäufer: {seller.get('display_name', '-')}</b>\n"
-        f"Nutzername: {seller.get('Nutzername')}\n"
+        f"Nutzername: {seller.get('Nutzername', '–')}\n"
         f"Nutzer-ID: {seller.get('telegram_user_id', '-')}\n"
         f"Firma: {seller.get('business_name', '-')}\n"
         f"E-Mail: {seller.get('contact_email', '-')}\n"
@@ -85,7 +82,8 @@ async def seller_detail_callback(callback: CallbackQuery):
 
     keyboard = get_seller_detail_keyboard(telegram_id, seller.get("active", False))
 
-    await callback.message.edit_text(msg, reply_markup=keyboard, parse_mode="HTML")
+    await callback.message.answer(msg, reply_markup=keyboard, parse_mode="HTML")
+    await callback.answer()
 
 
 @router.callback_query(F.data.startswith("seller_toggle:"))
@@ -139,7 +137,7 @@ async def seller_delete_confirm(callback: CallbackQuery):
 
     keyboard = get_confirm_delete_seller_keyboard(telegram_id)
 
-    await callback.message.edit_text(
+    await callback.message.answer(
         f"❗️Bist du sicher, dass du den Verkäufer mit ID {telegram_id} löschen möchtest?",
         reply_markup=keyboard,
     )
@@ -156,10 +154,30 @@ async def cancel_delete_seller_callback(callback: CallbackQuery):
 @router.callback_query(F.data.startswith("seller_delete_confirm:"))
 async def seller_delete_execute(callback: CallbackQuery):
     _, telegram_id = callback.data.split(":")
+    seller = get_seller_by_id(int(telegram_id))
+
+    if not seller:
+        await callback.answer(
+            f"❌ Verkäufer mit ID {telegram_id} nicht gefunden.", show_alert=True
+        )
+        await seller_detail_callback(callback)
+        return
+
+    if seller.get("active"):
+        await callback.answer(
+            f"⚠️ Verkäufer mit ID {telegram_id} ist noch aktiv und kann daher nicht gelöscht werden.\n"
+            "Bitte deaktiviere ihn zuerst.",
+            show_alert=True,
+        )
+        await seller_detail_callback(callback)
+        return
 
     try:
-        delete_seller_by_id(int(telegram_id))  # deine Löschfunktion
-        await callback.message.edit_text("✅ Verkäufer wurde gelöscht.")
+        delete_seller_by_id(telegram_id)
+        await callback.message.edit_text(
+            f"✅ Verkäufer mit ID {telegram_id} wurde gelöscht.",
+            reply_markup=get_main_menu_keyboard(),
+        )
     except Exception as e:
         await callback.message.edit_text(f"❌ Fehler beim Löschen: {e}")
 

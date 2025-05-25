@@ -21,8 +21,18 @@ def save_seller(seller_data: dict):
 
 def delete_seller_by_id(telegram_user_id: int):
     try:
-        item = table.get_item(Key={"telegram_user_id": telegram_user_id})
+        telegram_user_id = int(telegram_user_id)
+        key = {"telegram_user_id": telegram_user_id}
+        response = table.get_item(Key=key)
+        item = response.get("Item")
+        if not item:
+            raise ValueError("Verkäufer nicht gefunden.")
+
+        table.delete_item(Key=key)
+        return True
     except ClientError as e:
         print(f"❌ Fehler beim Zugriff auf DynamoDB: {e.response['Error']['Message']}")
-
-    return table.delete_item(item)
+        raise
+    except Exception as e:
+        print(f"❌ Allgemeiner Fehler: {e}")
+        raise
