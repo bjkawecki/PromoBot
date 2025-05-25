@@ -1,10 +1,20 @@
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import CallbackQuery
 
 from config import ADMIN_USER_NAME
 from database.dynamodb import dynamodb
-from database.seller_repository import get_seller_by_id, save_seller
+from database.seller_repository import (
+    delete_seller_by_id,
+    get_seller_by_id,
+    save_seller,
+)
+from keyboards.admin import (
+    get_confirm_delete_seller_keyboard,
+    get_confirm_toggle_keyboard,
+    get_seller_detail_keyboard,
+    get_seller_list_keyboard,
+)
 from keyboards.common import get_back_to_start_keyboard
 from misc import format_datetime
 from routers.admin.states import AddSeller
@@ -40,27 +50,10 @@ async def display_sellers_callback(callback: CallbackQuery):
             )
             return
 
-        # Liste formatieren
-        buttons = []
-        for seller in seller_list:
-            display_name = seller.get("display_name", None)
-            telegram_id = seller["telegram_user_id"]
-            button_text = display_name if display_name else str(telegram_id)
-            buttons.append(
-                [
-                    InlineKeyboardButton(
-                        text=button_text, callback_data=f"seller_detail:{telegram_id}"
-                    )
-                ]
-            )
-        buttons.append(
-            [
-                InlineKeyboardButton(text="Abbrechen", callback_data="back_to_start"),
-            ],
+        keyboard = get_seller_list_keyboard(seller_list)
+        await callback.message.answer(
+            "Wähle einen Verkäufer aus:", reply_markup=keyboard
         )
-        markup = InlineKeyboardMarkup(inline_keyboard=buttons)
-
-        await callback.message.answer("Wähle einen Verkäufer aus:", reply_markup=markup)
         await callback.answer()
 
     except Exception as e:
@@ -90,33 +83,7 @@ async def seller_detail_callback(callback: CallbackQuery):
         f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"
     )
 
-    inline_keyboard = []
-    if seller.get("active", False):
-        inline_keyboard.append(
-            [
-                InlineKeyboardButton(
-                    text="🚫 Deaktivieren",
-                    callback_data=f"seller_toggle:{telegram_id}:deactivate",
-                )
-            ],
-        )
-    else:
-        inline_keyboard.append(
-            [
-                InlineKeyboardButton(
-                    text="✅ Aktivieren",
-                    callback_data=f"seller_toggle:{telegram_id}:activate",
-                )
-            ]
-        )
-    inline_keyboard.append(
-        [
-            InlineKeyboardButton(
-                text="🔙 Zurück zur Übersicht", callback_data="display_sellers"
-            )
-        ]
-    )
-    keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+    keyboard = get_seller_detail_keyboard(telegram_id, seller.get("active", False))
 
     await callback.message.edit_text(msg, reply_markup=keyboard, parse_mode="HTML")
 
@@ -130,18 +97,7 @@ async def seller_toggle_callback(callback: CallbackQuery):
         f"{'aktivieren' if action == 'activate' else 'deaktivieren'} möchtest?"
     )
 
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="✅ Ja", callback_data=f"confirm_toggle:{telegram_id}:{action}"
-                ),
-                InlineKeyboardButton(
-                    text="❌ Abbrechen", callback_data=f"cancel_toggle:{telegram_id}"
-                ),
-            ]
-        ]
-    )
+    keyboard = get_confirm_toggle_keyboard(telegram_id, action)
 
     await callback.message.answer(confirm_text, reply_markup=keyboard)
     await callback.answer()
@@ -174,4 +130,37 @@ async def confirm_toggle_callback(callback: CallbackQuery):
     await callback.answer(status_text)
 
     await seller_detail_callback(callback)
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("seller_delete:"))
+async def seller_delete_confirm(callback: CallbackQuery):
+    _, telegram_id = callback.data.split(":")
+
+    keyboard = get_confirm_delete_seller_keyboard(telegram_id)
+
+    await callback.message.edit_text(
+        f"❗️Bist du sicher, dass du den Verkäufer mit ID {telegram_id} löschen möchtest?",
+        reply_markup=keyboard,
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("cancel_delete_seller"))
+async def cancel_delete_seller_callback(callback: CallbackQuery):
+    await callback.answer("❎ Vorgang abgebrochen.")
+    await seller_detail_callback(callback)
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("seller_delete_confirm:"))
+async def seller_delete_execute(callback: CallbackQuery):
+    _, telegram_id = callback.data.split(":")
+
+    try:
+        delete_seller_by_id(int(telegram_id))  # deine Löschfunktion
+        await callback.message.edit_text("✅ Verkäufer wurde gelöscht.")
+    except Exception as e:
+        await callback.message.edit_text(f"❌ Fehler beim Löschen: {e}")
+
     await callback.answer()
