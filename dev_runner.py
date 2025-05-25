@@ -5,47 +5,6 @@ import time
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from scripts import dynamodb_local
-
-
-def is_dynamodb_local_running():
-    try:
-        output = (
-            subprocess.check_output(
-                [
-                    "docker",
-                    "ps",
-                    "--filter",
-                    "ancestor=amazon/dynamodb-local",
-                    "--format",
-                    "{{.ID}}",
-                ]
-            )
-            .decode()
-            .strip()
-        )
-        return len(output) > 0
-    except subprocess.CalledProcessError:
-        return False
-
-
-def start_dynamodb_local():
-    print("Starte DynamoDB Local Container...")
-    subprocess.run(
-        [
-            "docker",
-            "run",
-            "-d",
-            "-p",
-            "8000:8000",
-            "-v",
-            "./dynamodb-local-data:/home/dynamodblocal/data",
-            "amazon/dynamodb-local:latest",
-        ],
-        check=True,
-    )
-    print("DynamoDB Local gestartet.")
-
 
 class RestartOnChangeHandler(FileSystemEventHandler):
     def __init__(self, cmd):
@@ -76,14 +35,6 @@ class RestartOnChangeHandler(FileSystemEventHandler):
 
 
 if __name__ == "__main__":
-    if not is_dynamodb_local_running():
-        start_dynamodb_local()
-
-    else:
-        print("DynamoDB Local läuft bereits.")
-    dynamodb_local.create_seller_table()
-    dynamodb_local.create_buyer_table()
-    dynamodb_local.read_schema()
     path = "."
     cmd = ["python", "src/main.py"]
     event_handler = RestartOnChangeHandler(cmd)
