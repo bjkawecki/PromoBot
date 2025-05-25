@@ -1,6 +1,5 @@
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
 
 from keyboards.buyer import (
@@ -11,17 +10,7 @@ from keyboards.buyer import (
 )
 from keyboards.start import get_main_menu_deeplink
 from messages.welcome_text import welcome_text
-
-
-class OrderState(StatesGroup):
-    name = State()
-    street_address = State()
-    city = State()
-    state = State()
-    quantity = State()
-    confirm = State()
-    edit_mode = State()
-
+from states.order import OrderState
 
 router = Router()
 

@@ -1,0 +1,26 @@
+seller:
+  username: str
+  telegram_user_id: int
+  business_name: str
+  contact_email: str
+  display_name: str
+  active: bool
+  registered: bool
+  created_add: date
+
+known_buyer: []
+
+promo:
+  promo_name: str
+  start_date: date
+  end_date: date
+  display_name: str
+  image_url: str
+  description: str
+  price: float
+  shipping_costs: float
+  display_message: str
+  channel_id: int
+  product_limit: int
+  options: {}
+  timer: {}

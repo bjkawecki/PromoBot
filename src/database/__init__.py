@@ -1,5 +1,7 @@
 import json
 
+from config import DB_URL
+
 # --- Rollen aus JSON-Datei laden (für Entwicklung) ---
-with open("src/database/roles.json") as f:
-    ROLE_MAP = json.load(f)
+with open(DB_URL) as f:
+    db_data = json.load(f)

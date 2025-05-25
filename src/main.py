@@ -3,14 +3,14 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from config import TOKEN
+from config import TOKEN, seller_table
 from middleware import RoleMiddleware
-from routers import routers
+from routers import router
 
 dp = Dispatcher(storage=MemoryStorage())
-dp.message.middleware(RoleMiddleware())
+dp.message.middleware(RoleMiddleware(seller_table))
 bot = Bot(token=TOKEN)
-dp.include_router(routers)
+dp.include_router(router)
 
 
 async def main():
