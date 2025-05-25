@@ -1,10 +1,10 @@
-from aiogram import Router
+from aiogram import F, Router
 from aiogram.filters import CommandStart
-from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 
-from keyboards.admin import admin_keyboard
-from keyboards.buyer import buyer_keyboard
-from keyboards.seller import seller_keyboard
+from keyboards.common import get_role_keyboard
+from messages.welcome_text import get_role_welcome_message_text
 
 router = Router()
 
@@ -12,9 +12,17 @@ router = Router()
 @router.message(CommandStart())
 async def start_handler(message: Message, role: str):
     print("Rolle:", role)
-    if role == "admin":
-        await message.answer("Willkommen, Admin!", reply_markup=admin_keyboard())
-    elif role == "seller":
-        await message.answer("Hallo Verkäufer!", reply_markup=seller_keyboard())
-    else:
-        await message.answer("Willkommen, Kunde!", reply_markup=buyer_keyboard())
+    role_keyboard = get_role_keyboard(role)
+    role_welcome_message = get_role_welcome_message_text(role)
+    await message.answer(role_welcome_message, reply_markup=role_keyboard())
+
+
+@router.callback_query(F.data == "back_to_start")
+async def back_to_start_callback(callback: CallbackQuery, role: str):
+    role_keyboard = get_role_keyboard(role)
+    role_welcome_message = get_role_welcome_message_text(role)
+    await callback.message.answer(
+        role_welcome_message,
+        reply_markup=role_keyboard(),
+    )
+    await callback.answer()

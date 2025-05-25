@@ -12,7 +12,7 @@ def admin_keyboard():
             ],
             [
                 InlineKeyboardButton(
-                    text="📃 Verkäufer anzeigen", callback_data="display_sellers"
+                    text="📃 Verkäuferliste", callback_data="display_sellers"
                 )
             ],
         ]

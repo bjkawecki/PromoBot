@@ -3,10 +3,12 @@ seller:
   telegram_user_id: int
   business_name: str
   contact_email: str
+  contact_phone: int
+  homepage: str
   display_name: str
   active: bool
   registered: bool
-  created_add: date
+  created_at: date
 
 known_buyer: []
 
