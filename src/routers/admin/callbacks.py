@@ -69,7 +69,7 @@ async def seller_detail_callback(callback: CallbackQuery):
 
     msg = (
         f"<b>Verkäufer: {seller.get('display_name', '-')}</b>\n"
-        f"Nutzername: {seller.get('Nutzername', '–')}\n"
+        f"Nutzername: {seller.get('username', '–')}\n"
         f"Nutzer-ID: {seller.get('telegram_user_id', '-')}\n"
         f"Firma: {seller.get('business_name', '-')}\n"
         f"E-Mail: {seller.get('contact_email', '-')}\n"

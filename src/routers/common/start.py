@@ -13,7 +13,9 @@ async def start_handler(message: Message, role: str):
     print("Rolle:", role)
     role_keyboard = get_role_keyboard(role)
     role_welcome_message = get_role_welcome_message_text(role)
-    await message.answer(role_welcome_message, reply_markup=role_keyboard())
+    await message.answer(
+        role_welcome_message, reply_markup=role_keyboard(), parse_mode="MarkdownV2"
+    )
 
 
 @router.callback_query(F.data == "back_to_start")
@@ -23,7 +25,6 @@ async def back_to_start_callback(
     role_keyboard = get_role_keyboard(role, is_registered)
     role_welcome_message = get_role_welcome_message_text(role)
     await callback.message.answer(
-        role_welcome_message,
-        reply_markup=role_keyboard(),
+        role_welcome_message, reply_markup=role_keyboard(), parse_mode="MarkdownV2"
     )
     await callback.answer()

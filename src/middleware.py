@@ -24,6 +24,7 @@ class RoleMiddleware(BaseMiddleware):
     ) -> Any:
         user = data.get("event_from_user")
         if user:
+            is_registered = None
             if user.username == ADMIN_USER_NAME:
                 role = "admin"
             elif await self.is_seller(user.id):
