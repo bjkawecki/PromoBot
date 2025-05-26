@@ -36,7 +36,7 @@ def start_dynamodb_local():
             "--name",
             "dynamodb_local",
             "-v",
-            "./dynamodb-local-data:/home/dynamodblocal/data",
+            "/home/bjoern/Projekte/promo-bot/dynamodb-local-data:/home/dynamodblocal/data",
             "amazon/dynamodb-local:latest",
         ],
         check=True,
