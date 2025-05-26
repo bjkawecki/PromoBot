@@ -26,11 +26,11 @@ def get_main_menu_keyboard() -> InlineKeyboardMarkup:
     )
 
 
-def get_role_keyboard(role: str, is_registered: bool) -> InlineKeyboardMarkup:
+def get_role_keyboard(role: str, seller) -> InlineKeyboardMarkup:
     if role == "admin":
         return get_admin_keyboard
     elif role == "seller":
-        if is_registered:
+        if seller.get("is_registered", False):
             return get_registered_seller_keyboard
         return get_unregistered_seller_keyboard
     else:

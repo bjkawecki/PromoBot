@@ -1,6 +1,6 @@
 - admin actions
   - read all promos
 - seller actions
-  - register
+  - ~~register~~
   - read/update seller info
   - CRUD promo

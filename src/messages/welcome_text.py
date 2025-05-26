@@ -10,12 +10,25 @@ welcome_text = (
 )
 
 
-def get_role_welcome_message_text(role: str):
+def get_role_welcome_message_text(role: str, seller):
     if role == "admin":
         return "Willkommen, Admin\\!"
     elif role == "seller":
-        return "👋 *Willkommen\\!*\
-        \n\nℹ️ Du wurdest als Verkäufer freigeschaltet\\.\
-        \n\n📝 Registriere dich, um Werbeaktionen zu erstellen\\."
+        if seller.get("active") and not seller.get("is_registered", False):
+            return (
+                "Du wurdest als *Verkäufer* freigeschaltet\\.\n"
+                "*Registriere* dich, um Promos zu erstellen\\."
+            )
+        elif not seller.get("active") and seller.get("is_registered", False):
+            return (
+                f"Hallo, *{seller.get('display_name')}*\\.\n\n"
+                "🚫 Dein Konto bei PromoBot ist *nicht aktiv*\\.\n\n"
+                "💬 Kontaktiere den *Administrator*, um dein Konto zu aktivieren\\."
+            )
+        else:
+            registered_seller_text = f"Hallo, *{seller.get('display_name')}*\\.\n\n✅ Dein Konto bei PromoBot ist *aktiv*\\."
+            if not seller.get("has_stripe", False):
+                registered_seller_text += "\n\n⚠️ Du hast *keine Stripe\\-ID* hinterlegt\\. Du benötigst eine Stripe\\-ID, um *Promos* zu starten\\."
+            return registered_seller_text
     else:
         return "Willkommen, Kunde\\!"

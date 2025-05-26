@@ -9,21 +9,18 @@ router = Router()
 
 
 @router.message(CommandStart())
-async def start_handler(message: Message, role: str):
-    print("Rolle:", role)
-    role_keyboard = get_role_keyboard(role)
-    role_welcome_message = get_role_welcome_message_text(role)
+async def start_handler(message: Message, role: str, seller):
+    role_keyboard = get_role_keyboard(role, seller)
+    role_welcome_message = get_role_welcome_message_text(role, seller)
     await message.answer(
         role_welcome_message, reply_markup=role_keyboard(), parse_mode="MarkdownV2"
     )
 
 
 @router.callback_query(F.data == "back_to_start")
-async def back_to_start_callback(
-    callback: CallbackQuery, role: str, is_registered: bool
-):
-    role_keyboard = get_role_keyboard(role, is_registered)
-    role_welcome_message = get_role_welcome_message_text(role)
+async def back_to_start_callback(callback: CallbackQuery, role: str, seller):
+    role_keyboard = get_role_keyboard(role, seller)
+    role_welcome_message = get_role_welcome_message_text(role, seller)
     await callback.message.answer(
         role_welcome_message, reply_markup=role_keyboard(), parse_mode="MarkdownV2"
     )

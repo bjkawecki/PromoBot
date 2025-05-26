@@ -99,7 +99,7 @@ async def set_homepage_name(message: Message, state: FSMContext):
         f"E-Mail: {data.get('contact_email', '–')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
         f"Homepage: {data.get('homepage', '–')}\n"
-        "\nBitte gib die <b>ID deines Stripe-Kontos</b> an (optional, nötig für das Anlegen von Werbeaktionen):",
+        "\nBitte gib die <b>ID deines Stripe-Kontos</b> an (optional, benötigt für das Starten von Promos):",
         reply_markup=get_optional_homepage_field_keyboard(),
         parse_mode="HTML",
     )

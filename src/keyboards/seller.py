@@ -6,7 +6,12 @@ def get_registered_seller_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Produkte verwalten", callback_data="seller_products"
+                    text="➕ Promo erstellen", callback_data="seller_products"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="📁 Promos verwalten", callback_data="seller_products"
                 )
             ],
             [InlineKeyboardButton(text="↩️ Neustart", callback_data="back_to_start")],
