@@ -27,8 +27,12 @@ def get_role_welcome_message_text(role: str, seller):
             )
         else:
             registered_seller_text = f"Hallo, *{seller.get('display_name')}*\\.\n\n✅ Dein Konto bei PromoBot ist *aktiv*\\."
-            if not seller.get("has_stripe", False):
+            if not seller.get("stripe_account_id", False):
                 registered_seller_text += "\n\n⚠️ Du hast *keine Stripe\\-ID* hinterlegt\\. Du benötigst eine Stripe\\-ID, um *Promos* zu starten\\."
+            else:
+                registered_seller_text += (
+                    "\n\n💩 Jetzt kannst du deinen *Kack* verkaufen\\."
+                )
             return registered_seller_text
     else:
         return "Willkommen, Kunde\\!"

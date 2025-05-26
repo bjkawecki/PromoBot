@@ -22,7 +22,7 @@ async def set_business_name(message: Message, state: FSMContext):
     await message.answer(
         "📝 Registrierung als Verkäufer\n\n"
         f"Unternehmen: {message.text}\n"
-        "\nBitte die <b>Bezeichnung</b> deines Unternehmens an, die <b>öffentlich sichbtar</b> sein soll:",
+        "\nBitte gib den <b>Anzeigename</b> deines Unternehmens an:",
         reply_markup=get_abort_keyboard(),
         parse_mode="HTML",
     )
@@ -121,6 +121,7 @@ async def set_stripe_account_id(message: Message, state: FSMContext):
         f"E-Mail: {data.get('contact_email', '–')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
         f"Homepage: {data.get('homepage', '–')}\n"
+        f"Stripe-ID: {data.get('stripe_account_id', '–')}\n"
         "\n✅ Deine Registrierung als Verkäufer ist abgeschlossen!\n\n"
         "Du kannst jetzt Produkte hinzufügen oder dein Profil weiter bearbeiten.",
         reply_markup=get_main_menu_keyboard(),

@@ -75,6 +75,7 @@ async def seller_detail_callback(callback: CallbackQuery):
         f"E-Mail: {seller.get('contact_email', '-')}\n"
         f"Telefon: {seller.get('contact_phone', '-')}\n"
         f"Homepage: {seller.get('homepage', '-')}\n"
+        f"Stripe-ID: {seller.get('stripe_account_id', '–')}\n"
         f"Aktiv: {'Ja' if seller.get('active') else 'Nein'}\n"
         f"Registriert: {'Ja' if seller.get('is_registered') else 'Nein'}\n"
         f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"

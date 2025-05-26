@@ -4,3 +4,4 @@
   - ~~register~~
   - read/update seller info
   - CRUD promo
+  - checks everywhere if seller is active
