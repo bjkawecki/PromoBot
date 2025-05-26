@@ -13,7 +13,7 @@ seller:
 known_buyer: []
 
 promo:
-  promo_name: str
+  promo_id: str
   start_date: date
   end_date: date
   display_name: str

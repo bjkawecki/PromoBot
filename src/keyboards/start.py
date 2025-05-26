@@ -14,7 +14,8 @@ def get_main_menu_neutral() -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="Alle aktuellen Aktionen ansehen", callback_data="all_promos"
+                    text="Alle aktuellen Aktionen ansehen",
+                    callback_data="all_promotions",
                 )
             ],
             [

@@ -3,7 +3,7 @@ from datetime import datetime
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 
-from database.seller_repository import save_seller
+from database.repositories.sellers import save_seller
 from keyboards.admin import admin_keyboard
 from routers.admin.states import AddSeller
 

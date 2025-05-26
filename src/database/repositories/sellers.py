@@ -2,7 +2,7 @@ from botocore.exceptions import ClientError
 
 from database.dynamodb import dynamodb
 
-table = dynamodb.Table("seller")
+table = dynamodb.Table("sellers")
 
 
 def get_seller_by_id(telegram_user_id: int):

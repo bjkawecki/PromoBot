@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery
 
 from config import ADMIN_USER_NAME
 from database.dynamodb import dynamodb
-from database.seller_repository import (
+from database.repositories.sellers import (
     delete_seller_by_id,
     get_seller_by_id,
     save_seller,
@@ -16,8 +16,8 @@ from keyboards.admin import (
     get_seller_list_keyboard,
 )
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
-from misc import format_datetime
 from routers.admin.states import AddSeller
+from utils.misc import format_datetime
 
 router = Router()
 
@@ -40,7 +40,7 @@ async def add_seller_callback(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == "display_sellers")
 async def display_sellers_callback(callback: CallbackQuery):
-    table = dynamodb.Table("seller")
+    table = dynamodb.Table("sellers")
     try:
         response = table.scan()
         seller_list = response.get("Items", [])

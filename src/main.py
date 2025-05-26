@@ -8,7 +8,7 @@ from database.dynamodb import dynamodb
 from middleware import RoleMiddleware
 from routers import router
 
-seller_table = dynamodb.Table("seller")
+seller_table = dynamodb.Table("sellers")
 dp = Dispatcher(storage=MemoryStorage())
 dp.message.middleware(RoleMiddleware(seller_table))
 dp.callback_query.middleware(RoleMiddleware(seller_table))

@@ -15,6 +15,12 @@ def admin_keyboard():
                     text="📃 Verkäuferliste", callback_data="display_sellers"
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    text="📣 Angebote", callback_data="display_promotions"
+                )
+            ],
+            [InlineKeyboardButton(text="↩️ Neustart", callback_data="back_to_start")],
         ]
     )
 

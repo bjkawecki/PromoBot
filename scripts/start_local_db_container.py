@@ -1,6 +1,6 @@
 import subprocess
 
-from scripts import dynamodb_local
+import dynamodb_local
 
 
 def is_dynamodb_local_running():
@@ -50,6 +50,7 @@ if __name__ == "__main__":
 
     else:
         print("DynamoDB Local läuft bereits.")
-    dynamodb_local.create_seller_table()
-    dynamodb_local.create_buyer_table()
+    dynamodb_local.create_sellers_table()
+    dynamodb_local.create_buyers_table()
+    dynamodb_local.create_promotions_table()
     dynamodb_local.read_schema()
