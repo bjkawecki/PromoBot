@@ -69,7 +69,7 @@ def get_edit_order_details_keyboard() -> InlineKeyboardMarkup:
     return keyboard
 
 
-def buyer_keyboard():
+def get_buyer_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [

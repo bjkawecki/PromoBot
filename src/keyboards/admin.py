@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def admin_keyboard():
+def get_admin_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [

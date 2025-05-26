@@ -1,8 +1,11 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from keyboards.admin import admin_keyboard
-from keyboards.buyer import buyer_keyboard
-from keyboards.seller import seller_keyboard
+from keyboards.admin import get_admin_keyboard
+from keyboards.buyer import get_buyer_keyboard
+from keyboards.seller import (
+    get_registered_seller_keyboard,
+    get_unregistered_seller_keyboard,
+)
 
 
 def get_abort_keyboard() -> InlineKeyboardMarkup:
@@ -23,10 +26,12 @@ def get_main_menu_keyboard() -> InlineKeyboardMarkup:
     )
 
 
-def get_role_keyboard(role: str) -> InlineKeyboardMarkup:
+def get_role_keyboard(role: str, is_registered: bool) -> InlineKeyboardMarkup:
     if role == "admin":
-        return admin_keyboard
+        return get_admin_keyboard
     elif role == "seller":
-        return seller_keyboard
+        if is_registered:
+            return get_registered_seller_keyboard
+        return get_unregistered_seller_keyboard
     else:
-        return buyer_keyboard
+        return get_buyer_keyboard

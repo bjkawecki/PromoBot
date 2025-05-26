@@ -17,8 +17,10 @@ async def start_handler(message: Message, role: str):
 
 
 @router.callback_query(F.data == "back_to_start")
-async def back_to_start_callback(callback: CallbackQuery, role: str):
-    role_keyboard = get_role_keyboard(role)
+async def back_to_start_callback(
+    callback: CallbackQuery, role: str, is_registered: bool
+):
+    role_keyboard = get_role_keyboard(role, is_registered)
     role_welcome_message = get_role_welcome_message_text(role)
     await callback.message.answer(
         role_welcome_message,

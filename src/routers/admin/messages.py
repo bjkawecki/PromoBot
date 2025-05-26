@@ -4,7 +4,7 @@ from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
 
 from database.repositories.sellers import save_seller
-from keyboards.admin import admin_keyboard
+from keyboards.admin import get_admin_keyboard
 from routers.admin.states import AddSeller
 
 router = Router()
@@ -24,6 +24,6 @@ async def save_seller_username(message: types.Message, state: FSMContext):
 
     await message.answer(
         f"✅ Neuer Verkäufer mit Telegram-User-ID {telegram_user_id} wurde gespeichert.",
-        reply_markup=admin_keyboard(),
+        reply_markup=get_admin_keyboard(),
     )
     await state.clear()
