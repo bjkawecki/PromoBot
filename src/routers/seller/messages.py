@@ -21,7 +21,7 @@ async def set_company_name(message: Message, state: FSMContext):
     await state.update_data(company_name=message.text)
     update_seller_field(user.id, "company_name", message.text)
     await state.set_state(SellerState.display_name)
-    await message.answer(
+    await message.edit_text(
         "📝 Registrierung als Verkäufer\n\n"
         f"Unternehmen: {message.text}\n"
         "\nBitte gib den <b>Anzeigename</b> deines Unternehmens an:",
@@ -37,7 +37,7 @@ async def set_display_name(message: Message, state: FSMContext):
     await state.update_data(display_name=message.text)
     update_seller_field(user.id, "display_name", message.text)
     await state.set_state(SellerState.contact_name)
-    await message.answer(
+    await message.edit_text(
         "📝 Registrierung als Verkäufer\n\n"
         f"Unternehmen: {data.get('company_name')}\n"
         f"Anzeigename: {message.text}\n"
@@ -54,7 +54,7 @@ async def set_contact_name(message: Message, state: FSMContext):
     await state.update_data(contact_name=message.text)
     update_seller_field(user.id, "contact_name", message.text)
     await state.set_state(SellerState.contact_email)
-    await message.answer(
+    await message.edit_text(
         "📝 Registrierung als Verkäufer\n\n"
         f"Unternehmen: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
@@ -73,7 +73,7 @@ async def set_contact_email_name(message: Message, state: FSMContext):
     data = await state.get_data()
     update_seller_field(user.id, "contact_email", contact_email)
     await state.set_state(SellerState.contact_phone)
-    await message.answer(
+    await message.edit_text(
         "📝 Registrierung als Verkäufer\n\n"
         f"Unternehmen: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
@@ -92,7 +92,7 @@ async def set_contact_phone_name(message: Message, state: FSMContext):
     data = await state.get_data()
     update_seller_field(user.id, "contact_phone", contact_phone)
     await state.set_state(SellerState.website)
-    await message.answer(
+    await message.edit_text(
         "📝 Registrierung als Verkäufer\n\n"
         f"Unternehmen: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
@@ -112,7 +112,7 @@ async def set_website_name(message: Message, state: FSMContext):
     data = await state.get_data()
     update_seller_field(user.id, "website", website)
     await state.set_state(SellerState.stripe_account_id)
-    await message.answer(
+    await message.edit_text(
         "📝 Registrierung als Verkäufer\n\n"
         f"Unternehmen: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
@@ -134,7 +134,7 @@ async def set_stripe_account_id(message: Message, state: FSMContext):
     update_seller_field(user.id, "stripe_account_id", stripe_account_id)
     update_seller_field(user.id, "is_registered", True)
     await state.set_state(SellerState.confirm)
-    await message.answer(
+    await message.edit_text(
         "📝 Registrierung als Verkäufer\n\n"
         f"Firma: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
@@ -156,7 +156,7 @@ async def receive_new_field_value(message: Message, state: FSMContext):
     data = await state.get_data()
     field = data["field"]
     field_label = FIELD_LABELS.get(field, field)
-    await message.answer(
+    await message.edit_text(
         f"Neuer Wert für <b>{field_label}</b>:\n\n{message.text}\n\n<b>Bestätigen?</b>",
         reply_markup=get_confirm_update_seller_field_keyboard(),
         parse_mode="HTML",

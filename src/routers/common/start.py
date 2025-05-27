@@ -21,7 +21,7 @@ async def start_handler(message: Message, role: str, seller):
 async def back_to_start_callback(callback: CallbackQuery, role: str, seller):
     role_keyboard = get_role_keyboard(role, seller)
     role_welcome_message = get_role_welcome_message_text(role, seller)
-    await callback.message.answer(
+    await callback.message.edit_text(
         role_welcome_message, reply_markup=role_keyboard(), parse_mode="MarkdownV2"
     )
     await callback.answer()

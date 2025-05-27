@@ -1,7 +1,6 @@
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-from aiogram.utils.markdown import hbold
 
 from database.repositories.sellers import get_seller_by_id, update_seller_field
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
@@ -26,7 +25,7 @@ async def start_registration(callback: CallbackQuery, state: FSMContext):
     user = callback.from_user
     update_seller_field(telegram_user_id=user.id, field="username", value=user.username)
     await state.set_state(SellerState.company_name)
-    await callback.message.answer(
+    await callback.message.edit_text(
         "📜 Registrierung als Verkäufer\n\n"
         "Bitte gib den <b>Unternehmensnamen</b> oder die <b>Geschäftsbezeichnung</b> an:",
         reply_markup=get_abort_keyboard(),
@@ -159,7 +158,7 @@ async def confirm_seller_profile_update_field(
 
 @router.callback_query(lambda c: c.data == "seller_help_menu")
 async def seller_help_menu_callback(callback: CallbackQuery):
-    await callback.message.answer(
+    await callback.message.edit_text(
         "<b>❓ Hilfe zur Nutzung von PromoBot</b>\n\nDrück auf das Thema, über das du mehr erfahren möchtest.",
         reply_markup=get_seller_help_menu_keyboard(),
         parse_mode="HTML",

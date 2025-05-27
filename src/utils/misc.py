@@ -35,3 +35,20 @@ FIELD_LABELS = {
     "website": "Webseite",
     "stripe_account_id": "Stripe-Konto-ID",
 }
+
+
+def get_seller_info(seller: object):
+    return (
+        f"Nutzername: {seller.get('username', '–')}\n"
+        f"Telegram-ID: {seller.get('telegram_user_id', '-')}\n"
+        f"Unternehmen: {seller.get('company_name', '-')}\n"
+        f"Anzeigename: {seller.get('display_name', '-')}\n"
+        f"Ansprechperson: {seller.get('contact_name', '-')}\n"
+        f"E-Mail: {seller.get('contact_email', '-')}\n"
+        f"Telefon: {seller.get('contact_phone', '-')}\n"
+        f"website: {seller.get('website', '-')}\n"
+        f"Stripe-Konto-ID: {seller.get('stripe_account_id', '–')}\n"
+        f"Aktiv: {'Ja' if seller.get('active') else 'Nein'}\n"
+        f"Registriert: {'Ja' if seller.get('is_registered') else 'Nein'}\n"
+        f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"
+    )

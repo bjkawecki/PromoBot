@@ -17,7 +17,7 @@ from keyboards.admin import (
 )
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
 from routers.admin.states import AddSeller
-from utils.misc import format_datetime
+from utils.misc import get_seller_info
 
 router = Router()
 
@@ -28,7 +28,7 @@ async def add_seller_callback(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Keine Berechtigung.", show_alert=True)
         return
 
-    await callback.message.answer(
+    await callback.message.edit_text(
         "Neuen Verkäufer hinzufügen\n\n"
         "Bitte gib die *Telegram\\-Nutzer\\-ID* des neuen Verkäufers an:",
         parse_mode="MarkdownV2",
@@ -49,7 +49,7 @@ async def display_sellers_callback(callback: CallbackQuery):
             return
 
         keyboard = get_seller_list_keyboard(seller_list)
-        await callback.message.answer(
+        await callback.message.edit_text(
             "Wähle einen Verkäufer aus:", reply_markup=keyboard
         )
         await callback.answer()
@@ -67,38 +67,34 @@ async def seller_detail_callback(callback: CallbackQuery):
         await callback.message.answer("Verkäufer nicht gefunden.")
         return
 
-    msg = (
-        f"<b>Verkäufer: {seller.get('display_name', '-')}</b>\n"
-        f"Nutzername: {seller.get('username', '–')}\n"
-        f"Nutzer-ID: {seller.get('telegram_user_id', '-')}\n"
-        f"Firma: {seller.get('company_name', '-')}\n"
-        f"E-Mail: {seller.get('contact_email', '-')}\n"
-        f"Telefon: {seller.get('contact_phone', '-')}\n"
-        f"website: {seller.get('website', '-')}\n"
-        f"Stripe-Konto-ID: {seller.get('stripe_account_id', '–')}\n"
-        f"Aktiv: {'Ja' if seller.get('active') else 'Nein'}\n"
-        f"Registriert: {'Ja' if seller.get('is_registered') else 'Nein'}\n"
-        f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"
-    )
+    seller_info = get_seller_info(seller)
 
     keyboard = get_seller_detail_keyboard(telegram_id, seller.get("active", False))
 
-    await callback.message.answer(msg, reply_markup=keyboard, parse_mode="HTML")
+    await callback.message.edit_text(
+        seller_info, reply_markup=keyboard, parse_mode="HTML"
+    )
     await callback.answer()
 
 
 @router.callback_query(F.data.startswith("seller_toggle:"))
 async def seller_toggle_callback(callback: CallbackQuery):
     _, telegram_id, action = callback.data.split(":")
+    seller = get_seller_by_id(int(telegram_id))
+
+    seller_info = get_seller_info(seller)
 
     confirm_text = (
-        "❗️Bist du sicher, dass du diesen Verkäufer "
-        f"{'aktivieren' if action == 'activate' else 'deaktivieren'} möchtest?"
+        "❗️<b>Bist du sicher, dass du den folgenden Verkäufer "
+        f"{'aktivieren' if action == 'activate' else 'deaktivieren'} möchtest?</b>\n\n"
+        f"{seller_info}"
     )
 
     keyboard = get_confirm_toggle_keyboard(telegram_id, action)
 
-    await callback.message.answer(confirm_text, reply_markup=keyboard)
+    await callback.message.edit_text(
+        confirm_text, reply_markup=keyboard, parse_mode="HTML"
+    )
     await callback.answer()
 
 
@@ -135,12 +131,15 @@ async def confirm_toggle_callback(callback: CallbackQuery):
 @router.callback_query(F.data.startswith("seller_delete:"))
 async def seller_delete_confirm(callback: CallbackQuery):
     _, telegram_id = callback.data.split(":")
-
+    seller = get_seller_by_id(int(telegram_id))
+    seller_info = get_seller_info(seller)
     keyboard = get_confirm_delete_seller_keyboard(telegram_id)
 
-    await callback.message.answer(
-        f"❗️Bist du sicher, dass du den Verkäufer mit ID {telegram_id} löschen möchtest?",
+    await callback.message.edit_text(
+        f"❗️<b>Bist du sicher, dass du den folgenden Verkäufer löschen möchtest?</b>\n\n"
+        f"{seller_info}",
         reply_markup=keyboard,
+        parse_mode="HTML",
     )
     await callback.answer()
 
