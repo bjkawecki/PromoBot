@@ -1,16 +1,20 @@
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
+from aiogram.utils.markdown import hbold
 
 from database.repositories.sellers import get_seller_by_id, update_seller_field
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
 from keyboards.seller import (
     get_abort_update_seller_keyboard,
+    get_back_to_seller_help_menu_keyboard,
     get_back_to_update_seller_keyboard,
     get_optional_stripe_id_field_keyboard,
     get_optional_website_field_keyboard,
+    get_seller_help_menu_keyboard,
     get_update_seller_profile_keyboard,
 )
+from messages.seller import HELP_TOPICS
 from routers.seller.states import EditSellerField, SellerState
 from utils.misc import FIELD_LABELS
 
@@ -92,7 +96,8 @@ async def skip_add_stripe_id_handler(callback_query: CallbackQuery, state: FSMCo
             "Stripe-Konto-ID: – \n"
             "\n✅ <b>Der Registriervorgang als Verkäufer ist abgeschlossen!<b>\n\n"
             "Du kannst nun <b>Promos</b> hinzufügen oder dein <b>Profil</b> bearbeiten.\n\n"
-            "Denk daran, dass du eine gültige <b>Stripe-Konto-ID</b> angeben musst, um Promos starten zu können."
+            "Denk daran, dass du eine <b>Stripe-Konto-ID</b> angeben musst, um Promos starten zu können.\n"
+            "Eine Stripe-Konto-ID erhältst du auf https://stripe.com/de."
         )
 
     await callback_query.message.answer(
@@ -150,3 +155,26 @@ async def confirm_seller_profile_update_field(
         parse_mode="HTML",
     )
     await state.clear()
+
+
+@router.callback_query(lambda c: c.data == "seller_help_menu")
+async def seller_help_menu_callback(callback: CallbackQuery):
+    await callback.message.answer(
+        "<b>❓ Hilfe zur Nutzung von PromoBot</b>\n\nDrück auf das Thema, über das du mehr erfahren möchtest.",
+        reply_markup=get_seller_help_menu_keyboard(),
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.callback_query(lambda c: c.data.startswith("seller_help:"))
+async def seller_help_callback(callback: CallbackQuery):
+    _, topic = callback.data.split(":")
+    text = HELP_TOPICS.get(topic, "Dieses Hilfethema existiert leider nicht.")
+
+    await callback.message.edit_text(
+        text=text,
+        reply_markup=get_back_to_seller_help_menu_keyboard(),
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+    )

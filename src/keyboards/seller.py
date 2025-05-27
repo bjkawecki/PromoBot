@@ -19,7 +19,7 @@ def get_registered_seller_keyboard():
                     text="👤 Profil bearbeiten", callback_data="update_seller_profile"
                 )
             ],
-            [InlineKeyboardButton(text="❓ Hilfe", callback_data="seller_help")],
+            [InlineKeyboardButton(text="❓ Hilfe", callback_data="seller_help_menu")],
             [InlineKeyboardButton(text="↩️ Neustart", callback_data="back_to_start")],
         ]
     )
@@ -33,7 +33,7 @@ def get_unregistered_seller_keyboard():
                     text="📜 Registrieren", callback_data="register_seller"
                 )
             ],
-            [InlineKeyboardButton(text="❓ Hilfe", callback_data="seller_help")],
+            [InlineKeyboardButton(text="❓ Hilfe", callback_data="seller_help_menu")],
             [InlineKeyboardButton(text="↩️ Neustart", callback_data="back_to_start")],
         ]
     )
@@ -183,5 +183,41 @@ def get_confirm_update_seller_field_keyboard() -> InlineKeyboardMarkup:
                     text="❌ Abbrechen", callback_data="update_seller_profile"
                 ),
             ]
+        ]
+    )
+
+
+def get_seller_help_menu_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Allgemeine Informationen", callback_data="seller_help:info"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Bezahlen mit Stripe", callback_data="seller_help:stripe"
+                )
+            ],
+            [InlineKeyboardButton(text="Support", callback_data="seller_help:support")],
+            [
+                InlineKeyboardButton(
+                    text="AGB & Datenschutz", callback_data="seller_help:legal"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="⬅️ Zum Hauptmenü", callback_data="back_to_start"
+                )
+            ],
+        ]
+    )
+
+
+def get_back_to_seller_help_menu_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="⬅️ Zurück", callback_data="seller_help_menu")]
         ]
     )
