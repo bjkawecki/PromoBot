@@ -5,3 +5,4 @@
   - read/update seller info
   - CRUD promo
   - checks everywhere if seller is active
+  - Info-Seite mit den wichtigsten Informationen zum Ablauf für Verkäufer und zur Funktion des Bots

@@ -1,7 +1,7 @@
 welcome_text = (
-    "*👋 Willkommen bei PromoBot!*\n\n"
+    "*Willkommen bei PromoBot!*\n\n"
     "🌟 *Exklusiver Rabatt für Kanal\\-Abonnenten*:\n\n"
-    "*🌲 Wald\\-T\\-Shirt – stylisch, nachhaltig, bequem*\n\n"
+    "*Wald\\-T\\-Shirt – stylisch, nachhaltig, bequem*\n\n"
     "*Verfügbare Größen:* XS, S, M, L, XL\n"
     "*Farben:* Blau, Rot, Gelb\n\n"
     "*💸 Statt ~30~€ nur 20€!* 🔥\n"
@@ -16,7 +16,7 @@ def get_role_welcome_message_text(role: str, seller):
     elif role == "seller":
         if seller.get("active") and not seller.get("is_registered", False):
             return (
-                "Du wurdest als *Verkäufer* freigeschaltet\\.\n"
+                "✉️ Du wurdest als *Verkäufer* freigeschaltet\\.\n\n"
                 "*Registriere* dich, um Promos zu erstellen\\."
             )
         elif not seller.get("active") and seller.get("is_registered", False):
@@ -30,9 +30,7 @@ def get_role_welcome_message_text(role: str, seller):
             if not seller.get("stripe_account_id", False):
                 registered_seller_text += "\n\n⚠️ Du hast *keine Stripe\\-ID* hinterlegt\\. Du benötigst eine Stripe\\-ID, um *Promos* zu starten\\."
             else:
-                registered_seller_text += (
-                    "\n\n💩 Jetzt kannst du deinen *Kack* verkaufen\\."
-                )
+                registered_seller_text += "\n\n💬 Erstelle und verwalte *Promos*\\."
             return registered_seller_text
     else:
         return "Willkommen, Kunde\\!"

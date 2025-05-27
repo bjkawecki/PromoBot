@@ -43,5 +43,5 @@ def get_promotions_by_seller_id(seller_id: int):
         response = table.query(KeyConditionExpression=Key("seller_id").eq(seller_id))
         return response.get("Items", [])
     except Exception as e:
-        print(f"❌ Fehler beim Abfragen der Angebote: {e}")
+        print(f"❌ Fehler beim Abfragen der Promos: {e}")
         return []

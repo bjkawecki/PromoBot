@@ -17,7 +17,7 @@ def get_admin_keyboard():
             ],
             [
                 InlineKeyboardButton(
-                    text="📣 Angebote", callback_data="display_promotions"
+                    text="📣 Promos", callback_data="display_promotions"
                 )
             ],
             [InlineKeyboardButton(text="↩️ Neustart", callback_data="back_to_start")],

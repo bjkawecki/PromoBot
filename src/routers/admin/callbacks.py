@@ -29,8 +29,8 @@ async def add_seller_callback(callback: CallbackQuery, state: FSMContext):
         return
 
     await callback.message.answer(
-        "*Neuer Verkäufer hinzufügen*\n\n"
-        "Bitte sende die Telegram\\-Nutzer\\-ID des neuen Verkäufers:",
+        "Neuen Verkäufer hinzufügen\n\n"
+        "Bitte gib die *Telegram\\-Nutzer\\-ID* des neuen Verkäufers an:",
         parse_mode="MarkdownV2",
         reply_markup=get_abort_keyboard(),
     )
@@ -71,11 +71,11 @@ async def seller_detail_callback(callback: CallbackQuery):
         f"<b>Verkäufer: {seller.get('display_name', '-')}</b>\n"
         f"Nutzername: {seller.get('username', '–')}\n"
         f"Nutzer-ID: {seller.get('telegram_user_id', '-')}\n"
-        f"Firma: {seller.get('business_name', '-')}\n"
+        f"Firma: {seller.get('company_name', '-')}\n"
         f"E-Mail: {seller.get('contact_email', '-')}\n"
         f"Telefon: {seller.get('contact_phone', '-')}\n"
-        f"Homepage: {seller.get('homepage', '-')}\n"
-        f"Stripe-ID: {seller.get('stripe_account_id', '–')}\n"
+        f"website: {seller.get('website', '-')}\n"
+        f"Stripe-Konto-ID: {seller.get('stripe_account_id', '–')}\n"
         f"Aktiv: {'Ja' if seller.get('active') else 'Nein'}\n"
         f"Registriert: {'Ja' if seller.get('is_registered') else 'Nein'}\n"
         f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"

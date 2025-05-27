@@ -5,19 +5,21 @@ from aiogram.types import Message
 from database.repositories.sellers import update_seller_field
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
 from keyboards.seller import (
-    get_optional_homepage_field_keyboard,
+    get_confirm_update_seller_field_keyboard,
     get_optional_phone_field_keyboard,
+    get_optional_website_field_keyboard,
 )
-from routers.seller.states import SellerState
+from routers.seller.states import EditSellerField, SellerState
+from utils.misc import FIELD_LABELS
 
 router = Router()
 
 
-@router.message(SellerState.business_name)
-async def set_business_name(message: Message, state: FSMContext):
+@router.message(SellerState.company_name)
+async def set_company_name(message: Message, state: FSMContext):
     user = message.from_user
-    await state.update_data(business_name=message.text)
-    update_seller_field(user.id, "business_name", message.text)
+    await state.update_data(company_name=message.text)
+    update_seller_field(user.id, "company_name", message.text)
     await state.set_state(SellerState.display_name)
     await message.answer(
         "📝 Registrierung als Verkäufer\n\n"
@@ -34,11 +36,29 @@ async def set_display_name(message: Message, state: FSMContext):
     data = await state.get_data()
     await state.update_data(display_name=message.text)
     update_seller_field(user.id, "display_name", message.text)
+    await state.set_state(SellerState.contact_name)
+    await message.answer(
+        "📝 Registrierung als Verkäufer\n\n"
+        f"Unternehmen: {data.get('company_name')}\n"
+        f"Anzeigename: {message.text}\n"
+        "\nBitte gib einen <b>Ansprechpartner</b> an:",
+        reply_markup=get_abort_keyboard(),
+        parse_mode="HTML",
+    )
+
+
+@router.message(SellerState.contact_name)
+async def set_contact_name(message: Message, state: FSMContext):
+    user = message.from_user
+    data = await state.get_data()
+    await state.update_data(contact_name=message.text)
+    update_seller_field(user.id, "contact_name", message.text)
     await state.set_state(SellerState.contact_email)
     await message.answer(
         "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('business_name')}\n"
-        f"Anzeigename: {message.text}\n"
+        f"Unternehmen: {data.get('company_name')}\n"
+        f"Anzeigename: {data.get('display_name')}\n"
+        f"Ansprechpartner: {message.text}\n"
         "\nBitte gib eine <b>geschäftliche E-Mail-Adresse</b> an:",
         reply_markup=get_abort_keyboard(),
         parse_mode="HTML",
@@ -55,7 +75,7 @@ async def set_contact_email_name(message: Message, state: FSMContext):
     await state.set_state(SellerState.contact_phone)
     await message.answer(
         "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('business_name')}\n"
+        f"Unternehmen: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
         f"E-Mail: {message.text}\n"
         "\nBitte gib eine <b>geschäftliche Telefonnummer</b> an (optional):",
@@ -71,36 +91,36 @@ async def set_contact_phone_name(message: Message, state: FSMContext):
     await state.update_data(contact_phone=contact_phone)
     data = await state.get_data()
     update_seller_field(user.id, "contact_phone", contact_phone)
-    await state.set_state(SellerState.homepage)
+    await state.set_state(SellerState.website)
     await message.answer(
         "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('business_name')}\n"
+        f"Unternehmen: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
         f"E-Mail: {data.get('contact_email')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
-        "\nBitte gib die <b>Homepage</b> deiner Firma an (optional):",
-        reply_markup=get_optional_homepage_field_keyboard(),
+        "\nBitte gib die <b>Webseite</b> deiner Firma an (optional):",
+        reply_markup=get_optional_website_field_keyboard(),
         parse_mode="HTML",
     )
 
 
-@router.message(SellerState.homepage)
-async def set_homepage_name(message: Message, state: FSMContext):
+@router.message(SellerState.website)
+async def set_website_name(message: Message, state: FSMContext):
     user = message.from_user
-    homepage = message.text
-    await state.update_data(homepage=homepage)
+    website = message.text
+    await state.update_data(website=website)
     data = await state.get_data()
-    update_seller_field(user.id, "homepage", homepage)
+    update_seller_field(user.id, "website", website)
     await state.set_state(SellerState.stripe_account_id)
     await message.answer(
         "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('business_name')}\n"
+        f"Unternehmen: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
         f"E-Mail: {data.get('contact_email', '–')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
-        f"Homepage: {data.get('homepage', '–')}\n"
+        f"website: {data.get('website', '–')}\n"
         "\nBitte gib die <b>ID deines Stripe-Kontos</b> an (optional, benötigt für das Starten von Promos):",
-        reply_markup=get_optional_homepage_field_keyboard(),
+        reply_markup=get_optional_website_field_keyboard(),
         parse_mode="HTML",
     )
 
@@ -116,14 +136,29 @@ async def set_stripe_account_id(message: Message, state: FSMContext):
     await state.set_state(SellerState.confirm)
     await message.answer(
         "📝 Registrierung als Verkäufer\n\n"
-        f"Firma: {data.get('business_name')}\n"
+        f"Firma: {data.get('company_name')}\n"
         f"Anzeigename: {data.get('display_name')}\n"
         f"E-Mail: {data.get('contact_email', '–')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
-        f"Homepage: {data.get('homepage', '–')}\n"
-        f"Stripe-ID: {data.get('stripe_account_id', '–')}\n"
-        "\n✅ Deine Registrierung als Verkäufer ist abgeschlossen!\n\n"
-        "Du kannst jetzt Produkte hinzufügen oder dein Profil weiter bearbeiten.",
+        f"website: {data.get('website', '–')}\n"
+        f"Stripe-Konto-ID: {data.get('stripe_account_id', '–')}\n"
+        "\n✅ <b>Der Registriervorgang als Verkäufer ist abgeschlossen!<b>\n\n"
+        "Du kannst nun <b>Promos</b> hinzufügen oder dein <b>Profil</b> bearbeiten.\n\n",
         reply_markup=get_main_menu_keyboard(),
         parse_mode="HTML",
     )
+
+
+@router.message(EditSellerField.waiting_for_new_value)
+async def receive_new_field_value(message: Message, state: FSMContext):
+    await state.update_data(new_value=message.text)
+
+    data = await state.get_data()
+    field = data["field"]
+    field_label = FIELD_LABELS.get(field, field)
+    await message.answer(
+        f"Neuer Wert für <b>{field_label}</b>:\n\n{message.text}\n\n<b>Bestätigen?</b>",
+        reply_markup=get_confirm_update_seller_field_keyboard(),
+        parse_mode="HTML",
+    )
+    await state.set_state(EditSellerField.confirm_update)

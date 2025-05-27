@@ -10,17 +10,28 @@ def create_initial_seller_data(telegram_id: int, username: str = "") -> dict:
     return {
         "telegram_user_id": telegram_id,
         "username": username,
-        "business_name": "",
+        "company_name": "",
         "contact_email": "",
         "display_name": "",
     }
 
 
 def is_seller_registered(seller: dict) -> bool:
-    required = ["business_name", "display_name", "contact_email"]
+    required = ["company_name", "display_name", "contact_email"]
     return all(seller.get(k) for k in required)
 
 
 def escape_markdown_v2(text: str) -> str:
     escape_chars = r"\_*[]()~`>#+-=|{}.!"
     return "".join(f"\\{c}" if c in escape_chars else c for c in text)
+
+
+FIELD_LABELS = {
+    "company_name": "Unternehmensname",
+    "display_name": "Anzeigename",
+    "contact_name": "Ansprechpartner",
+    "contact_email": "E-Mail",
+    "contact_phone": "Telefonnummer",
+    "website": "Webseite",
+    "stripe_account_id": "Stripe-Konto-ID",
+}
