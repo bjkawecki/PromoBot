@@ -1,3 +1,5 @@
+import uuid
+
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
@@ -14,7 +16,7 @@ from keyboards.seller import (
     get_update_seller_profile_keyboard,
 )
 from messages.seller import HELP_TOPICS
-from routers.seller.states import EditSellerField, SellerState
+from routers.seller.states import EditSellerField, PromoState, SellerState
 from utils.misc import FIELD_LABELS
 
 router = Router()
@@ -177,3 +179,21 @@ async def seller_help_callback(callback: CallbackQuery):
         parse_mode="HTML",
         disable_web_page_preview=True,
     )
+
+
+@router.callback_query(F.data == "create_promo")
+async def start_create_promo(callback: CallbackQuery, state: FSMContext):
+    promo_id = str(uuid.uuid4())
+    seller_id = callback.from_user.id
+
+    await state.set_data({"promo_id": promo_id, "seller_id": seller_id})
+    await state.set_state(PromoState.display_name)
+
+    await callback.message.edit_text(
+        "📄 Neue Promo erstellen\n\n<b>Wie heißt deine Promo?</b>\n\n"
+        "Der Name wird als <b>Überschrift</b> in der Werbenachricht angezeigt.\n\n"
+        "(Beispiel: 🎄 <i>Weihnachtsangebot 2025</i>)",
+        reply_markup=get_abort_keyboard(),
+        parse_mode="HTML",
+    )
+    await callback.answer()

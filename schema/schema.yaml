@@ -22,7 +22,7 @@ promo:
   price: float
   shipping_costs: float
   display_message: str
-  channel_id: int
+  channel_id: str
   product_limit: int
-  options: {}
+  options: dict[str, str]
   timer: {}

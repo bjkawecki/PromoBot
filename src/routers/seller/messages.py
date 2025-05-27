@@ -9,7 +9,7 @@ from keyboards.seller import (
     get_optional_phone_field_keyboard,
     get_optional_website_field_keyboard,
 )
-from routers.seller.states import EditSellerField, SellerState
+from routers.seller.states import EditSellerField, PromoState, SellerState
 from utils.misc import FIELD_LABELS
 
 router = Router()
@@ -162,3 +162,17 @@ async def receive_new_field_value(message: Message, state: FSMContext):
         parse_mode="HTML",
     )
     await state.set_state(EditSellerField.confirm_update)
+
+
+@router.message(PromoState.display_name)
+async def get_display_name(message: Message, state: FSMContext):
+    await state.update_data(display_name=message.text)
+    await state.set_state(PromoState.display_message)
+
+    await message.answer(
+        "📄 Neue Promo erstellen\n\n<b>Erstelle eine Beschreibung</b>\n\n"
+        "Dieser Text erscheint unter dem Titel in der Werbenachricht.\n\n"
+        "(Beispiel: <i>Bestelle Buch XY mit Gratisversand.</i>)",
+        reply_markup=get_abort_keyboard(),
+        parse_mode="HTML",
+    )
