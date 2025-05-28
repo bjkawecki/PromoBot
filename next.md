@@ -3,6 +3,13 @@
 - seller actions
   - ~~register~~
   - ~~read/update seller info~~
-  - CREATE promo: add validation
-  - READ all promos
+  - ~~READ all promos~~
+  - input data type validation
+  - add bool field 'active'
+    -> display promo details with buttons 'Aktivieren/Deaktivieren', 'Bearbeiten', 'Löschen', 'Zurück'
+    -> 'Bearbeiten' -> display buttons of fields to update and 'Zurück'
+    -> Add flow update for certain fields
+  - help/FAQ
+    -> welche Promo Felder man updaten darf
+    -> Leitfaden für das Erstellen von Promo: Am besten Texte vorbereiten und dann Copy-Paste
 - checks everywhere if seller is active

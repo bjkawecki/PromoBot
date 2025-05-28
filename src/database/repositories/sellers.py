@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from botocore.exceptions import ClientError
 
 from database.dynamodb import dynamodb
@@ -69,5 +71,10 @@ def set_seller_as_registered(telegram_user_id: int):
         raise
 
 
-def save_promo(promo_data: dict):
-    table.put_item(Item=promo_data)
+def get_all_sellers() -> List[Dict]:
+    try:
+        response = table.scan()
+        return response.get("Items", [])
+    except Exception as e:
+        print(f"[ERROR] Fehler beim Abrufen der Verkäufer: {e}")
+        return []

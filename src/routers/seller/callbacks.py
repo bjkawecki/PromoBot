@@ -4,7 +4,7 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
-from database.repositories.promos import create_promotion
+from database.repositories.promos import create_promotion, get_promotions_by_seller_id
 from database.repositories.sellers import get_seller_by_id, update_seller_field
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
 from keyboards.seller import (
@@ -13,6 +13,7 @@ from keyboards.seller import (
     get_back_to_update_seller_keyboard,
     get_optional_stripe_id_field_keyboard,
     get_optional_website_field_keyboard,
+    get_promo_list_keyboard,
     get_seller_help_menu_keyboard,
     get_update_seller_profile_keyboard,
 )
@@ -203,6 +204,7 @@ async def start_create_promo(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "confirm_create_promo")
 async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
+    print(data)
     new_promo = {
         "promo_id": data.get("promo_id"),
         "seller_id": data.get("seller_id"),
@@ -210,17 +212,35 @@ async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMConte
         "display_message": data.get("display_message"),
         "description": data.get("description", ""),
         "price": data.get("price"),
-        "shipping_costs": data.get("shippint_costs"),
+        "shipping_costs": data.get("shipping_costs"),
         "channel_id": data.get("channel_id"),
         "start_date": data.get("start_date"),
         "end_data": data.get("end_date"),
         "image": data.get("image", ""),
     }
 
-    promo_id = create_promotion(data=new_promo)
+    _, msg = create_promotion(data=new_promo)
+    if _:
+        await callback.message.edit_text(
+            f"<b>✅ Neue Promo '{data.get('display_name')}' wurde erstellt</b>.",
+            reply_markup=get_main_menu_keyboard(),
+            parse_mode="HTML",
+        )
+        await callback.answer()
+        return
     await callback.message.edit_text(
-        f"<b>✅ Neue Promo '{data.get('display_name')}' wurde erstellt</b>.",
+        f"<b>{msg}</b>",
         reply_markup=get_main_menu_keyboard(),
         parse_mode="HTML",
     )
+
+
+@router.callback_query(F.data == "get_seller_promos")
+async def display_seller_promos(callback: CallbackQuery, state: FSMContext):
+    promo_list = get_promotions_by_seller_id(callback.from_user.id)
+    if not promo_list:
+        await callback.answer("❌ Du hast noch keine Promo erstellt.")
+        return
+    keyboard = get_promo_list_keyboard(promo_list)
+    await callback.message.edit_text("Wähle eine Promo aus:", reply_markup=keyboard)
     await callback.answer()

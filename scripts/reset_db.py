@@ -37,7 +37,32 @@ def create_sellers_table():
         print(f"Tabelle '{table_name}' existiert bereits.")
 
 
-def delete_seller_table(table_name):
+def create_promotions_table():
+    table_name = "promotions"
+    existing_tables = dynamodb.meta.client.list_tables()["TableNames"]
+    if table_name not in existing_tables:
+        table = dynamodb.create_table(
+            TableName="promotions",
+            KeySchema=[
+                {"AttributeName": "seller_id", "KeyType": "HASH"},  # Partition Key
+                {"AttributeName": "promo_id", "KeyType": "RANGE"},  # Sort Key
+            ],
+            AttributeDefinitions=[
+                {"AttributeName": "seller_id", "AttributeType": "N"},
+                {
+                    "AttributeName": "promo_id",
+                    "AttributeType": "S",
+                },
+            ],
+            ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+        )
+        table.wait_until_exists()
+        print(f"Tabelle '{table_name}' wurde erstellt.")
+    else:
+        print(f"Tabelle '{table_name}' existiert bereits.")
+
+
+def delete_table(table_name):
     try:
         table = dynamodb.Table(table_name)
         # Prüfen ob die Tabelle existiert (z. B. über describe)
@@ -55,5 +80,5 @@ def delete_seller_table(table_name):
 
 
 if __name__ == "__main__":
-    delete_seller_table("sellers")
-    create_sellers_table()
+    delete_table("promotions")
+    create_promotions_table()

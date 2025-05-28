@@ -3,9 +3,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from config import ADMIN_USER_NAME
-from database.dynamodb import dynamodb
 from database.repositories.sellers import (
     delete_seller_by_id,
+    get_all_sellers,
     get_seller_by_id,
     save_seller,
 )
@@ -40,22 +40,17 @@ async def add_seller_callback(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == "display_sellers")
 async def display_sellers_callback(callback: CallbackQuery):
-    table = dynamodb.Table("sellers")
-    try:
-        response = table.scan()
-        seller_list = response.get("Items", [])
-        if not seller_list:
-            await callback.answer("❌ Es sind noch keine Verkäufer registriert.")
-            return
+    seller_list = get_all_sellers()
 
-        keyboard = get_seller_list_keyboard(seller_list)
-        await callback.message.edit_text(
-            "Wähle einen Verkäufer aus:", reply_markup=keyboard
-        )
-        await callback.answer()
-    except Exception as e:
-        await callback.message.answer("⚠️ Fehler beim Abrufen der Verkäufer.")
-        print(f"[ERROR] {e}")
+    if not seller_list:
+        await callback.answer("❌ Es sind noch keine Verkäufer registriert.")
+        return
+
+    keyboard = get_seller_list_keyboard(seller_list)
+    await callback.message.edit_text(
+        "Wähle einen Verkäufer aus:", reply_markup=keyboard
+    )
+    await callback.answer()
 
 
 @router.callback_query(F.data.startswith("seller_detail:"))
