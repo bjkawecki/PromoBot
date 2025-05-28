@@ -219,3 +219,19 @@ def get_back_to_seller_help_menu_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="⬅️ Zurück", callback_data="seller_help_menu")]
         ]
     )
+
+
+def get_confirm_create_promo_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="✅ Bestätigen",
+                    callback_data="confirm_create_promo",
+                ),
+                InlineKeyboardButton(
+                    text="❌ Abbrechen", callback_data="back_to_start"
+                ),
+            ]
+        ]
+    )

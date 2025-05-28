@@ -8,12 +8,9 @@ from database.dynamodb import dynamodb
 table = dynamodb.Table("promotions")
 
 
-def create_promotion(seller_id: int, data: dict):
-    promotion_id = str(uuid.uuid4())
-
+def create_promotion(data: dict):
     item = {
-        "seller_id": seller_id,  # Partition Key
-        "promotion_id": promotion_id,  # Sort Key
+        "promotion_id": data.get("promo_id"),  # Sort Key
         "start_date": data.get("start_date"),  # ISO-Format erwartet: '2025-05-26'
         "end_date": data.get("end_date"),
         "display_name": data.get("display_name"),
@@ -32,7 +29,7 @@ def create_promotion(seller_id: int, data: dict):
     try:
         table.put_item(Item=item)
         print("✅ Angebot erfolgreich gespeichert.")
-        return promotion_id
+        return item["promotion_id"]
     except Exception as e:
         print(f"❌ Fehler beim Speichern: {e}")
         return None

@@ -30,7 +30,7 @@ def get_role_welcome_message_text(role: str, seller):
             if not seller.get("stripe_account_id", False):
                 registered_seller_text += "\n\n⚠️ Du hast *keine Stripe\\-ID* hinterlegt\\. Du benötigst eine Stripe\\-ID, um *Promos* zu starten\\."
             else:
-                registered_seller_text += "\n\n💬 Erstelle und verwalte *Promos*\\."
+                registered_seller_text += "\n\n💬 Erstelle und verwalte *Promos*\\.\n\nErstellte Promos: 0\nAktive Promos: 0"
             return registered_seller_text
     else:
         return "Willkommen, Kunde\\!"

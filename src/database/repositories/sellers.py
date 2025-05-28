@@ -67,3 +67,7 @@ def set_seller_as_registered(telegram_user_id: int):
     except Exception as e:
         print(f"❌ Allgemeiner Fehler: {e}")
         raise
+
+
+def save_promo(promo_data: dict):
+    table.put_item(Item=promo_data)

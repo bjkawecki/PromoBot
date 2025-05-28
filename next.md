@@ -3,5 +3,6 @@
 - seller actions
   - ~~register~~
   - ~~read/update seller info~~
-  - CRUD promo
-  - checks everywhere if seller is active
+  - CREATE promo: add validation
+  - READ all promos
+- checks everywhere if seller is active

@@ -3,3 +3,7 @@ venv
 __pycache__
 test.json
 dynamodb-local-data
+.terraform
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
