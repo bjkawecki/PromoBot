@@ -1,5 +1,15 @@
 # PromoBot – Telegram Bot for Product Promotions
 
+![image](https://img.shields.io/badge/Aiogram-2CA5E0?style=flat-square&logo=telegram&logoColor=white)
+![image](https://img.shields.io/badge/Python-FFD43B?style=flat-square&logo=python&logoColor=blue)
+![AWS S3](https://img.shields.io/badge/AWS%20S3-FF9900?style=flat-square&logo=amazons3&logoColor=white)
+![image](https://img.shields.io/badge/DynamoDB-4053D6?style=flat-square&logo=Amazon%20DynamoDB&logoColor=white)
+![image](https://img.shields.io/badge/Terraform-7B42BC?style=flat-square&logo=terraform&logoColor=white)
+
+<!-- ![AWS Lambda](https://img.shields.io/badge/AWS%20Lambda-FF9900?logo=awslambda&logoColor=fff&style=flat-square) -->
+
+![logo](assets/logo.png)
+
 **PromoBot** is a modular Telegram bot built with [aiogram](https://aiogram.dev/), designed to help sellers create and manage product promotions, while offering buyers a simple and interactive shopping experience via Telegram. Admins can oversee platform activity and manage users.
 
 ## Features
@@ -21,10 +31,10 @@ src/
 ├── messages/ # Predefined texts and message templates
 ├── services/ # AWS S3 and other external integrations
 ├── states/ # FSM state definitions per role
-├── utils/ # Utility functions
+├── utils/
 ├── config.py # Global configuration & constants
-├── main.py # Bot entry point
-└── middleware.py # Middleware setup (logging, throttling, etc.)
+├── main.py
+└── middleware.py
 ```
 
 ## Prerequisites
@@ -60,6 +70,5 @@ src/
 - aiogram – Telegram bot framework (async)
 - boto3 – AWS SDK for Python
 - Terraform for infrastructure
-- python-dotenv – Environment config
 - DynamoDB – NoSQL database (via repositories)
 - S3 for promo images
