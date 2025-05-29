@@ -1,13 +1,33 @@
+import io
 import re
 from urllib.parse import urlparse
 
 from aiogram.types import Message
+from PIL import Image
 
-from keyboards.admin.manage_seller import get_retry_or_abort_keyboard
+from keyboards.common import get_abort_keyboard
 
 EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.\w{2,}$")
 PHONE_REGEX = re.compile(r"^\+?[0-9]{7,15}$")
 TELEGRAM_USERNAME_REGEX = re.compile(r"^@?[a-zA-Z0-9_]{5,32}$")
+STRIPE_ACCOUNT_ID_REGEX = re.compile(r"^acct_[a-zA-Z0-9]{24}$")
+
+
+async def validate_string_length_max_50(
+    message: Message, value: str, field_name="Wert"
+) -> str | None:
+    def is_valid_length(text: str, min_length: int = 1, max_length: int = 100) -> bool:
+        return min_length <= len(text.strip()) <= max_length
+
+    try:
+        if is_valid_length(value, min_length=3, max_length=50):
+            return value
+    except ValueError:
+        await message.answer(
+            "❌ Ungültiger Wert. Eingabe muss zwischen 3 und 50 Zeichen lang sein.\n\n"
+            "Bitte versuche es erneut oder drücke auf 'Abbrechen':",
+            get_abort_keyboard(),
+        )
 
 
 async def validate_int(message: Message, value: str, field_name="Wert") -> int | None:
@@ -15,7 +35,8 @@ async def validate_int(message: Message, value: str, field_name="Wert") -> int |
         return int(value)
     except ValueError:
         await message.answer(
-            f"❌ Ungültiger {field_name}: Bitte gib eine ganze Zahl ein."
+            f"❌ Ungültiger {field_name}: Bitte gib eine ganze Zahl ein oder drücke auf 'Abbrechen':",
+            reply_markup=get_abort_keyboard(),
         )
         return None
 
@@ -27,21 +48,30 @@ async def validate_date(message: Message, value: str, field_name="Datum") -> str
         parsed = datetime.strptime(value, "%d.%m.%Y")
         return parsed.isoformat()  # Oder return parsed für DynamoDB
     except ValueError:
-        await message.answer(f"❌ Ungültiges {field_name}: Format bitte TT.MM.JJJJ.")
+        await message.answer(
+            f"❌ Ungültiges {field_name}: Format bitte TT.MM.JJJJ oder drücke auf 'Abbrechen':",
+            reply_markup=get_abort_keyboard(),
+        )
         return None
 
 
 async def validate_email(message: Message, value: str) -> str | None:
     if EMAIL_REGEX.fullmatch(value.strip()):
         return value.strip()
-    await message.answer("❌ Ungültige E-Mail-Adresse. Bitte überprüfe dein Format.")
+    await message.answer(
+        "❌ Ungültige E-Mail-Adresse. Bitte überprüfe dein Format oder drücke auf 'Abbrechen':",
+        reply_markup=get_abort_keyboard(),
+    )
     return None
 
 
 async def validate_phone(message: Message, value: str) -> str | None:
     if PHONE_REGEX.fullmatch(value.strip()):
         return value.strip()
-    await message.answer("❌ Ungültige Telefonnummer. Erlaubt: +49 123 4567890")
+    await message.answer(
+        "❌ Ungültige Telefonnummer. Erlaubt: +49 123 4567890 oder drücke auf 'Abbrechen':",
+        reply_markup=get_abort_keyboard(),
+    )
     return None
 
 
@@ -53,8 +83,9 @@ async def validate_telegram_user_id(message: Message, value: str) -> int | None:
     except ValueError:
         pass
     await message.answer(
-        "❌ Ungültige Telegram-ID. Bitte gib eine gültige Zahl ein.",
-        reply_markup=get_retry_or_abort_keyboard(),
+        "❌ Ungültige Telegram-ID.\n\n"
+        "Bitte versuche es erneut oder drücke auf 'Abbrechen':",
+        reply_markup=get_abort_keyboard(),
     )
     return None
 
@@ -64,7 +95,8 @@ async def validate_telegram_username(message: Message, value: str) -> str | None
     if TELEGRAM_USERNAME_REGEX.fullmatch(username):
         return username if username.startswith("@") else "@" + username
     await message.answer(
-        "❌ Ungültiger Telegram-Benutzername. Beispiel: @PromoBotSupport"
+        "❌ Ungültiger Telegram-Benutzername. Beispiel: @PromoBotSupport oder drücke auf 'Abbrechen':",
+        reply_markup=get_abort_keyboard(),
     )
     return None
 
@@ -74,6 +106,30 @@ async def validate_url(message: Message, value: str) -> str | None:
     if parsed.scheme in ("http", "https") and parsed.netloc:
         return value
     await message.answer(
-        "❌ Ungültige URL. Bitte gib einen vollständigen Link an (https://...)."
+        "❌ Ungültige URL. Bitte gib einen vollständigen Link an (https://...) oder drücke auf 'Abbrechen':",
+        reply_markup=get_abort_keyboard(),
+    )
+    return None
+
+
+def validate_and_resize_image(
+    file_bytes: bytes, max_width=1280, max_height=720
+) -> bytes:
+    with Image.open(io.BytesIO(file_bytes)) as img:
+        if img.width > max_width or img.height > max_height:
+            img.thumbnail((max_width, max_height))
+        buf = io.BytesIO()
+        img.save(buf, format=img.format)
+        return buf.getvalue()
+
+
+async def validate_stripe_account_id(message: Message, value: str) -> str | None:
+    if STRIPE_ACCOUNT_ID_REGEX.fullmatch(value.strip()):
+        return value.strip()
+
+    await message.answer(
+        "❌ Ungültige Stripe-Account-ID.\n\n"
+        "Bitte gib eine ID im Format `acct_...` ein oder drücke auf 'Abbrechen':",
+        reply_markup=get_abort_keyboard(),
     )
     return None

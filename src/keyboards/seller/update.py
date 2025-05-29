@@ -24,7 +24,8 @@ def get_update_seller_profile_keyboard() -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="E-Mail", callback_data="edit_seller_profile_field:email"
+                    text="E-Mail",
+                    callback_data="edit_seller_profile_field:contact_email",
                 )
             ],
             [
@@ -34,7 +35,8 @@ def get_update_seller_profile_keyboard() -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="Telefon", callback_data="edit_seller_profile_field:phone"
+                    text="Telefon",
+                    callback_data="edit_seller_profile_field:contact_phone",
                 )
             ],
             [

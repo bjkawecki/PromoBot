@@ -1,5 +1,15 @@
 from datetime import datetime
 
+from utils.validation import (
+    validate_email,
+    validate_phone,
+    validate_string_length_max_50,
+    validate_stripe_account_id,
+    validate_telegram_user_id,
+    validate_telegram_username,
+    validate_url,
+)
+
 
 def format_datetime(iso_timestamp):
     dt = datetime.fromisoformat(iso_timestamp.replace("Z", "+00:00"))
@@ -34,6 +44,18 @@ FIELD_LABELS = {
     "contact_phone": "Telefonnummer",
     "website": "Webseite",
     "stripe_account_id": "Stripe-Konto-ID",
+}
+
+
+VALIDATOR_LABELS = {
+    "company_name": validate_string_length_max_50,
+    "display_name": validate_string_length_max_50,
+    "contact_name": validate_string_length_max_50,
+    "contact_email": validate_email,
+    "contact_phone": validate_phone,
+    "website": validate_url,
+    "telegram_user_name": validate_telegram_username,
+    "stripe_account_id": validate_stripe_account_id,
 }
 
 
