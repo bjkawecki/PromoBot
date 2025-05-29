@@ -7,3 +7,6 @@ dynamodb-local-data
 .terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
+development
+next.md
+requirements.txt
