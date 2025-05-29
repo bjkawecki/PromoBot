@@ -5,8 +5,8 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from config import TOKEN
 from database.dynamodb import dynamodb
+from handlers import router
 from middleware import RoleMiddleware
-from routers import router
 
 seller_table = dynamodb.Table("sellers")
 dp = Dispatcher(storage=MemoryStorage())

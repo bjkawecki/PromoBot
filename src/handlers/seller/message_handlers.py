@@ -5,14 +5,14 @@ from PIL import Image
 
 from database.repositories.sellers import update_seller_field
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
-from keyboards.seller import (
-    get_confirm_create_promo_keyboard,
-    get_confirm_update_seller_field_keyboard,
+from keyboards.seller.create import (
     get_optional_phone_field_keyboard,
     get_optional_website_field_keyboard,
 )
-from routers.seller.states import EditSellerField, PromoState, SellerState
+from keyboards.seller.promo import get_confirm_create_promo_keyboard
+from keyboards.seller.update import get_confirm_update_seller_field_keyboard
 from services.s3 import upload_image_to_s3, validate_and_resize_image
+from states.seller import EditSellerField, PromoState, SellerState
 from utils.misc import FIELD_LABELS
 
 router = Router()

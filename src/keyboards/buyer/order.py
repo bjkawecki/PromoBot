@@ -67,15 +67,3 @@ def get_edit_order_details_keyboard() -> InlineKeyboardMarkup:
         ]
     )
     return keyboard
-
-
-def get_buyer_keyboard():
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="Meine Bestellungen", callback_data="buyer_orders"
-                )
-            ]
-        ]
-    )

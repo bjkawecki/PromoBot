@@ -1,17 +1,18 @@
 from datetime import datetime
 
-from aiogram import Router, types
+from aiogram import Router
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
 
 from database.repositories.sellers import save_seller
-from keyboards.admin import get_admin_keyboard
-from routers.admin.states import AddSeller
+from keyboards.admin.start import get_admin_keyboard
+from states.admin import AddSeller
 
 router = Router()
 
 
 @router.message(AddSeller.waiting_for_username)
-async def save_seller_username(message: types.Message, state: FSMContext):
+async def save_seller_username(message: Message, state: FSMContext):
     telegram_user_id = message.text.strip()
     telegram_user_id = int(telegram_user_id)
     seller_obj = {

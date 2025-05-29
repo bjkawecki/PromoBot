@@ -1,31 +1,16 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def get_main_menu_neutral() -> InlineKeyboardMarkup:
-    keyboard = InlineKeyboardMarkup(
+def get_buyer_keyboard():
+    return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="📦 Meine Bestellungen", callback_data="my_orders"
-                ),
-            ],
-            [
-                InlineKeyboardButton(text="🛍️ Meine Käufe", callback_data="my_orders"),
-            ],
-            [
-                InlineKeyboardButton(
-                    text="Alle aktuellen Aktionen ansehen",
-                    callback_data="all_promotions",
+                    text="Meine Bestellungen", callback_data="buyer_orders"
                 )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="❓ Hilfe / Support", callback_data="display_bot_help_options"
-                ),
-            ],
+            ]
         ]
     )
-    return keyboard
 
 
 def get_main_menu_deeplink() -> InlineKeyboardMarkup:
@@ -46,11 +31,6 @@ def get_main_menu_deeplink() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(
                     text="❓ Hilfe", callback_data="display_bot_help_options"
                 ),
-            ],
-            [
-                InlineKeyboardButton(
-                    text="Sende Werbenachricht", callback_data="send_product_promo"
-                )
             ],
         ]
     )

@@ -3,22 +3,28 @@ import uuid
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
+from aiogram.utils.deep_linking import create_start_link
 
+from config import verkaeufer_kanal_id
 from database.repositories.promos import create_promotion, get_promotions_by_seller_id
 from database.repositories.sellers import get_seller_by_id, update_seller_field
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
-from keyboards.seller import (
-    get_abort_update_seller_keyboard,
-    get_back_to_seller_help_menu_keyboard,
-    get_back_to_update_seller_keyboard,
+from keyboards.seller.create import (
     get_optional_stripe_id_field_keyboard,
     get_optional_website_field_keyboard,
-    get_promo_list_keyboard,
+)
+from keyboards.seller.help import (
+    get_back_to_seller_help_menu_keyboard,
     get_seller_help_menu_keyboard,
+)
+from keyboards.seller.promo import get_inline_keyboard, get_promo_list_keyboard
+from keyboards.seller.update import (
+    get_abort_update_seller_keyboard,
+    get_back_to_update_seller_keyboard,
     get_update_seller_profile_keyboard,
 )
 from messages.seller import HELP_TOPICS
-from routers.seller.states import EditSellerField, PromoState, SellerState
+from states.seller import EditSellerField, PromoState, SellerState
 from utils.misc import FIELD_LABELS
 
 router = Router()
@@ -244,3 +250,15 @@ async def display_seller_promos(callback: CallbackQuery, state: FSMContext):
     keyboard = get_promo_list_keyboard(promo_list)
     await callback.message.edit_text("Wähle eine Promo aus:", reply_markup=keyboard)
     await callback.answer()
+
+
+@router.callback_query(F.data == "send_product_promo")
+async def send_product_promo(callback: CallbackQuery, bot):
+    link = await create_start_link(bot, "PROMO1")
+
+    await bot.send_message(
+        chat_id=verkaeufer_kanal_id,
+        text="Unser neues Produkt XY! Bestelle jetzt bequem hier:",
+        reply_markup=get_inline_keyboard(link),
+    )
+    await callback.answer()  # Feedback im UI

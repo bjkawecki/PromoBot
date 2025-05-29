@@ -9,14 +9,14 @@ from database.repositories.sellers import (
     get_seller_by_id,
     save_seller,
 )
-from keyboards.admin import (
+from keyboards.admin.manage_seller import (
     get_confirm_delete_seller_keyboard,
     get_confirm_toggle_keyboard,
     get_seller_detail_keyboard,
     get_seller_list_keyboard,
 )
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
-from routers.admin.states import AddSeller
+from states.admin import AddSeller
 from utils.misc import get_seller_info
 
 router = Router()

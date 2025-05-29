@@ -1,8 +1,8 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from keyboards.admin import get_admin_keyboard
-from keyboards.buyer import get_buyer_keyboard
-from keyboards.seller import (
+from keyboards.admin.start import get_admin_keyboard
+from keyboards.buyer.start import get_buyer_keyboard
+from keyboards.seller.start import (
     get_registered_seller_keyboard,
     get_unregistered_seller_keyboard,
 )
