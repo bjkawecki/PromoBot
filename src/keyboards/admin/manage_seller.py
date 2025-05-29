@@ -96,3 +96,16 @@ def get_seller_list_keyboard(sellers: list[dict]) -> InlineKeyboardMarkup:
     )
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_retry_or_abort_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Eingabe wiederholen", callback_data="add_seller"
+                )
+            ],
+            [InlineKeyboardButton(text="🔙 Zurück", callback_data="back_to_start")],
+        ]
+    )
