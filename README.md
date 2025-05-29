@@ -44,7 +44,7 @@ src/
 - AWS credentials (for S3)
 - DynamoDB (hosted or local)
 
-## Usage Overview
+## Usage Overview (in progress)
 
 ### Seller Flow
 
@@ -56,9 +56,8 @@ src/
 
 ### Buyer Flow
 
-1. Explore product
-2. Tap on inline buttons to see more info
-3. Initiate order
+1. Tap on inline buttons to see more info
+2. Initiate order
 
 ### Admin Flow
 
@@ -67,8 +66,8 @@ src/
 
 ## Tech Stack
 
-- aiogram – Telegram bot framework (async)
+- aiogram – Telegram bot framework
 - boto3 – AWS SDK for Python
 - Terraform for infrastructure
-- DynamoDB – NoSQL database (via repositories)
+- DynamoDB – NoSQL database
 - S3 for promo images
