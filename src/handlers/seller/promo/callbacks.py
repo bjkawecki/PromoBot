@@ -6,12 +6,33 @@ from aiogram.types import CallbackQuery
 from aiogram.utils.deep_linking import create_start_link
 
 from config import verkaeufer_kanal_id
-from database.repositories.promos import create_promotion, get_promotions_by_seller_id
+from database.repositories.promos import (
+    create_promotion,
+    get_promo_by_id,
+    get_promotions_by_seller_id,
+    save_promo,
+)
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
-from keyboards.seller.promo import get_inline_keyboard, get_promo_list_keyboard
+from keyboards.seller.promo import (
+    get_confirm_toggle_promo_status_keyboard,
+    get_inline_keyboard,
+    get_promo_detailview_keyboard,
+    get_promo_list_keyboard,
+    get_promo_menu_keyboard,
+)
 from states.seller import PromoState
 
 router = Router()
+
+
+@router.callback_query(F.data == "promo_menu")
+async def promo_menu_callback(callback: CallbackQuery, state: FSMContext):
+    await callback.message.edit_text(
+        "<b>📢 Promo-Menu</b>",
+        reply_markup=get_promo_menu_keyboard(),
+        parse_mode="HTML",
+    )
+    await callback.answer()
 
 
 @router.callback_query(F.data == "create_promo")
@@ -48,6 +69,8 @@ async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMConte
         "start_date": data.get("start_date"),
         "end_data": data.get("end_date"),
         "image": data.get("image", ""),
+        "blocked": False,
+        "active": False,
     }
 
     _, msg = create_promotion(data=new_promo)
@@ -68,7 +91,8 @@ async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMConte
 
 @router.callback_query(F.data == "get_seller_promos")
 async def display_seller_promos(callback: CallbackQuery, state: FSMContext):
-    promo_list = get_promotions_by_seller_id(callback.from_user.id)
+    seller_id = callback.from_user.id
+    promo_list = get_promotions_by_seller_id(seller_id)
     if not promo_list:
         await callback.answer("❌ Du hast noch keine Promo erstellt.")
         return
@@ -86,4 +110,84 @@ async def send_product_promo(callback: CallbackQuery, bot):
         text="Unser neues Produkt XY! Bestelle jetzt bequem hier:",
         reply_markup=get_inline_keyboard(link),
     )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("promo_detail:"))
+async def promo_detailview_callback(callback: CallbackQuery):
+    seller_id = callback.from_user.id
+    promo_id = callback.data.split(":")[1]
+    promo = get_promo_by_id(promo_id, seller_id)
+    is_active = promo.get("active", False)
+    promo_details = (
+        f"<b>🔎 Promo Details</b>\n\n"
+        f"<b>{promo.get('display_name')}</b>\n\n"
+        f"<b>Status</b>: {'aktiv ✅' if is_active else 'nicht aktiv ❌'}\n"
+        f"<b>Stückpreis</b>: {promo.get('price')}\n"
+        f"<b>Versandkosten</b>: {promo.get('shipping_costs')}\n"
+        f"<b>Ausgabekanal</b>: {promo.get('channel_id')}\n"
+        f"<b>Startdatum</b>: {promo.get('start_date')}\n"
+        f"<b>Enddatum</b>: {promo.get('end_date', '–')}\n"
+        f"<b>Bild</b>: {promo.get('image', '–')}\n\n"
+        f"<b>Nachricht</b>:\n{promo.get('display_message')}\n\n"
+        f"<b>Beschreibung</b>:\n{promo.get('description')}\n\n"
+        f"<b>{'🚫 Promo ist blockiert. Für mehr Informationen wende dich an den Kundenservice.' if promo.get('blocked', False) else ''}</b>"
+    )
+
+    if not promo:
+        await callback.answer("Promo nicht gefunden.")
+        return
+
+    keyboard = get_promo_detailview_keyboard(promo_id, is_active)
+
+    await callback.message.answer(
+        promo_details, reply_markup=keyboard, parse_mode="HTML"
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("promo_status:"))
+async def toggle_promo_status_callback(callback: CallbackQuery):
+    _, promo_id, action = callback.data.split(":")
+
+    confirm_text = (
+        "❗️<b>Bist du sicher, dass du die Promo "
+        f"{'aktivieren' if action == 'a' else 'deaktivieren'} möchtest?</b>\n\n"
+    )
+
+    keyboard = get_confirm_toggle_promo_status_keyboard(promo_id, action)
+
+    await callback.message.answer(
+        confirm_text, reply_markup=keyboard, parse_mode="HTML"
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("cancel_toggle_promo"))
+async def cancel_toggle_callback(callback: CallbackQuery):
+    await callback.answer("❎ Vorgang abgebrochen.")
+    await promo_detailview_callback(callback)
+
+
+@router.callback_query(F.data.startswith("confirm_toggle_promo:"))
+async def confirm_toggle_callback(callback: CallbackQuery):
+    seller_id = callback.from_user.id
+    _, promo_id, action = callback.data.split(":")
+
+    promo = get_promo_by_id(promo_id=promo_id, seller_id=seller_id)
+    if not promo:
+        await callback.message.answer("❌ Promo nicht gefunden.")
+        return
+
+    promo["active"] = True if action == "a" else False
+    save_promo(promo)
+
+    status_text = (
+        "✅ Promo wurde aktiviert."
+        if promo["active"]
+        else "🚫 Promo wurde deaktiviert."
+    )
+    await callback.answer(status_text)
+
+    await promo_detailview_callback(callback)
     await callback.answer()

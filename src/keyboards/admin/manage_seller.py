@@ -49,10 +49,12 @@ def get_confirm_toggle_keyboard(telegram_id, action):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="✅ Ja", callback_data=f"confirm_toggle:{telegram_id}:{action}"
+                    text="✅ Ja",
+                    callback_data=f"confirm_toggle_seller_is_active:{telegram_id}:{action}",
                 ),
                 InlineKeyboardButton(
-                    text="❌ Abbrechen", callback_data=f"cancel_toggle:{telegram_id}"
+                    text="❌ Abbrechen",
+                    callback_data=f"cancel_toggle_seller_is_active:{telegram_id}",
                 ),
             ]
         ]

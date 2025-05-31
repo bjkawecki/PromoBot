@@ -5,24 +5,10 @@ def get_registered_seller_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="🛒 Bestellungen", callback_data="list_orders")],
+            [InlineKeyboardButton(text="📢 Promos", callback_data="promo_menu")],
             [
                 InlineKeyboardButton(
-                    text="➕ Promo erstellen", callback_data="create_promo"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="📁 Promos verwalten", callback_data="get_seller_promos"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="👤 Profil bearbeiten", callback_data="update_seller_profile"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="Sende Werbenachricht", callback_data="send_product_promo"
+                    text="👤 Profil", callback_data="update_seller_profile"
                 )
             ],
             [InlineKeyboardButton(text="❓ Hilfe", callback_data="seller_help_menu")],

@@ -2,6 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from boto3.dynamodb.conditions import Attr, Key
+from botocore.exceptions import ClientError
 
 from database.dynamodb import dynamodb
 
@@ -71,3 +72,16 @@ def count_active_promos_for_seller(seller_id: int) -> int:
         FilterExpression=Attr("start_date").lte(today) & Attr("end_date").gte(today),
     )
     return len(response.get("Items", []))
+
+
+def get_promo_by_id(promo_id: str, seller_id: int):
+    try:
+        response = table.get_item(Key={"promo_id": promo_id, "seller_id": seller_id})
+    except ClientError as e:
+        print(f"❌ Fehler beim Zugriff auf DynamoDB: {e.response['Error']['Message']}")
+        return None
+    return response.get("Item")
+
+
+def save_promo(promo_data: dict):
+    table.put_item(Item=promo_data)

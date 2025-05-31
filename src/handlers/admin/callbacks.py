@@ -55,6 +55,8 @@ async def display_sellers_callback(callback: CallbackQuery):
 
 @router.callback_query(F.data.startswith("seller_detail:"))
 async def seller_detail_callback(callback: CallbackQuery):
+    print(f"DEBUG: callback.data = {repr(callback.data)}")
+
     telegram_id = callback.data.split(":")[1]
 
     seller = get_seller_by_id(int(telegram_id))
@@ -93,14 +95,14 @@ async def seller_toggle_callback(callback: CallbackQuery):
     await callback.answer()
 
 
-@router.callback_query(F.data.startswith("cancel_toggle"))
+@router.callback_query(F.data.startswith("cancel_toggle_seller_is_active"))
 async def cancel_toggle_callback(callback: CallbackQuery):
     await callback.answer("❎ Vorgang abgebrochen.")
     await seller_detail_callback(callback)
     await callback.answer()
 
 
-@router.callback_query(F.data.startswith("confirm_toggle:"))
+@router.callback_query(F.data.startswith("confirm_toggle_seller_is_active:"))
 async def confirm_toggle_callback(callback: CallbackQuery):
     _, telegram_id, action = callback.data.split(":")
 

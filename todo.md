@@ -11,9 +11,10 @@
 
 ## Seller
 
-- promo model: add bool field 'active'
-- promo view details:
-  - buttons: 'Aktivieren/Deaktivieren', 'Bearbeiten', 'Löschen', 'Zurück'
+~~- promo model: add bool field 'active'~~
+~~- promo view details:~~
+~~ - buttons: 'Aktivieren/Deaktivieren', 'Bearbeiten', 'Löschen', 'Zurück'~~
+
 - promo action: update
   - 'Bearbeiten': buttons for all fields to update
 - help/FAQ:
