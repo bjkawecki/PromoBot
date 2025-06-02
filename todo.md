@@ -11,10 +11,7 @@
 
 ## Seller
 
-- buttons: 'Bearbeiten', 'Löschen'
-
-- promo action: update
-  - 'Bearbeiten': buttons for all fields to update
+- buttons: 'Löschen'
 - help/FAQ:
   - welche Promo Felder man updaten darf
   - Leitfaden für das Erstellen von Promo: Am besten Texte vorbereiten und dann Copy-Paste
@@ -32,7 +29,6 @@
 ## Validation
 
 - seller: create promo
-- seller: update promo
 
 ## Messages
 
