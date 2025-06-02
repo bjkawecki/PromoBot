@@ -1,6 +1,6 @@
 from aiogram import Router
 
-from handlers.common.start import router as start_router
+from handlers.common.callbacks.start import router as start_router
 
 router = Router()
 
