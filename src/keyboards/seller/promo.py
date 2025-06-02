@@ -28,7 +28,7 @@ def get_promo_list_keyboard(promo_list: list[dict]) -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(
                     text=button_text,
-                    callback_data=f"promo_detail:{promo_id}",
+                    callback_data=f"promo_detail_menu:{promo_id}",
                 )
             ]
         )
@@ -62,12 +62,13 @@ def get_promo_menu_keyboard() -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="📁 Promos verwalten", callback_data="get_seller_promos"
+                    text="📁 Promos verwalten", callback_data="seller_promo_list_menu"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="📨 Promo senden", callback_data="send_product_promo"
+                    text="📨 Promo veröffentlichen",
+                    callback_data="publish_product_promo",
                 )
             ],
             [InlineKeyboardButton(text="🔙 Zurück", callback_data="back_to_start")],
@@ -109,7 +110,7 @@ def get_promo_detailview_keyboard(promo_id: str, status: bool) -> InlineKeyboard
     )
 
     inline_keyboard.append(
-        [InlineKeyboardButton(text="Zurück", callback_data="get_seller_promos")]
+        [InlineKeyboardButton(text="Zurück", callback_data="seller_promo_list_menu")]
     )
 
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -149,7 +150,7 @@ def get_edit_promo_keyboard(
         [
             InlineKeyboardButton(
                 text="❌ Abbrechen",
-                callback_data=f"promo_detail:{promo_id}",
+                callback_data=f"promo_detail_menu:{promo_id}",
             )
         ]
     )
@@ -190,7 +191,7 @@ def get_back_to_promo_detailview_keyboard(promo_id):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🔙 Zurück", callback_data=f"promo_detail:{promo_id}"
+                    text="🔙 Zurück", callback_data=f"promo_detail_menu:{promo_id}"
                 )
             ]
         ]
