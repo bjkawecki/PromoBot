@@ -106,7 +106,11 @@ def get_promo_detailview_keyboard(promo_id: str, status: bool) -> InlineKeyboard
     )
 
     inline_keyboard.append(
-        [InlineKeyboardButton(text="Promo löschen", callback_data="delete_promo")],
+        [
+            InlineKeyboardButton(
+                text="Promo löschen", callback_data=f"delete_promo:{promo_id}"
+            )
+        ],
     )
 
     inline_keyboard.append(
@@ -193,6 +197,23 @@ def get_back_to_promo_detailview_keyboard(promo_id):
                 InlineKeyboardButton(
                     text="🔙 Zurück", callback_data=f"promo_detail_menu:{promo_id}"
                 )
+            ]
+        ]
+    )
+
+
+def get_confirm_delete_promo_keyboard(promo_id):
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="✅ Ja, löschen",
+                    callback_data="confirm_delete_promo",
+                ),
+                InlineKeyboardButton(
+                    text="❌ Abbrechen",
+                    callback_data=f"cancel_delete_promo:{promo_id}",
+                ),
             ]
         ]
     )

@@ -2,16 +2,15 @@
 
 ## Admin
 
-- promos view: list
+- promos view: list, emphasize status
 - promo view: details
-- promo action: block/unblock (soft delete)
+- promo action: set_status: blocked, deleted
 - promo action: hard delete
 - seller action: block/unblock
 - seller action: hard delete
 
 ## Seller
 
-- buttons: 'Löschen'
 - help/FAQ:
   - welche Promo Felder man updaten darf
   - Leitfaden für das Erstellen von Promo: Am besten Texte vorbereiten und dann Copy-Paste

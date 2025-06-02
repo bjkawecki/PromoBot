@@ -48,7 +48,10 @@ def create_promotion(data: dict):
 
 def get_promotions_by_seller_id(seller_id: int):
     try:
-        response = table.query(KeyConditionExpression=Key("seller_id").eq(seller_id))
+        response = table.query(
+            KeyConditionExpression=Key("seller_id").eq(seller_id),
+            FilterExpression=Attr("status").ne("deleted"),
+        )
         return response.get("Items", [])
     except Exception as e:
         print(f"❌ Fehler beim Abfragen der Promos: {e}")
@@ -58,7 +61,10 @@ def get_promotions_by_seller_id(seller_id: int):
 def count_promos_for_seller(seller_id_raw: int) -> int:
     seller_id = int(seller_id_raw)
     table = dynamodb.Table("promotions")
-    response = table.query(KeyConditionExpression=Key("seller_id").eq(seller_id))
+    response = table.query(
+        KeyConditionExpression=Key("seller_id").eq(seller_id),
+        FilterExpression=Attr("status").ne("deleted"),
+    )
     return len(response.get("Items", []))
 
 
@@ -69,7 +75,9 @@ def count_active_promos_for_seller(seller_id: int) -> int:
     table = dynamodb.Table("promotions")
     response = table.query(
         KeyConditionExpression=Key("seller_id").eq(seller_id),
-        FilterExpression=Attr("start_date").lte(today) & Attr("end_date").gte(today),
+        FilterExpression=Attr("start_date").lte(today)
+        & Attr("end_date").gte(today)
+        & Attr("status").ne("deleted"),
     )
     return len(response.get("Items", []))
 
@@ -107,3 +115,15 @@ def update_promo_field(promo_id: int, seller_id: str, field: str, new_value: any
         UpdateExpression=f"SET {field} = :val",
         ExpressionAttributeValues={":val": new_value},
     )
+
+
+def set_promo_status_to_deleted(promo_id: int, seller_id: str):
+    try:
+        table.update_item(
+            Key={"promo_id": promo_id, "seller_id": seller_id},
+            UpdateExpression="SET #status = :deleted",
+            ExpressionAttributeNames={"#status": "status"},
+            ExpressionAttributeValues={":deleted": "deleted"},
+        )
+    except Exception as e:
+        print(f"❌ Fehler beim Löschen: {e}")
