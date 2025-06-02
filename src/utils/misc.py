@@ -1,11 +1,13 @@
 from datetime import datetime
 
 from utils.validation import (
+    validate_date,
+    validate_decimal,
     validate_email,
     validate_phone,
     validate_string_length_max_50,
+    validate_string_length_max_100,
     validate_stripe_account_id,
-    validate_telegram_user_id,
     validate_telegram_username,
     validate_url,
 )
@@ -36,7 +38,7 @@ def escape_markdown_v2(text: str) -> str:
     return "".join(f"\\{c}" if c in escape_chars else c for c in text)
 
 
-FIELD_LABELS = {
+SELLER_FIELD_LABELS = {
     "company_name": "Unternehmensname",
     "display_name": "Anzeigename",
     "contact_name": "Ansprechpartner",
@@ -47,7 +49,7 @@ FIELD_LABELS = {
 }
 
 
-VALIDATOR_LABELS = {
+SELLER_VALIDATOR_METHODS_MAP = {
     "company_name": validate_string_length_max_50,
     "display_name": validate_string_length_max_50,
     "contact_name": validate_string_length_max_50,
@@ -74,3 +76,48 @@ def get_seller_info(seller: object):
         f"Registriert: {'Ja' if seller.get('is_registered') else 'Nein'}\n"
         f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"
     )
+
+
+def get_promo_details(promo: object):
+    status = promo.get("status")
+    return (
+        f"<b>🔎 Promo Details</b>\n\n"
+        f"<b>{promo.get('display_name')}</b>\n\n"
+        f"<b>Status</b>: {'aktiv ✅' if status == 'active' else 'nicht aktiv ❌'}\n"
+        f"{promo.get('status')}\n"
+        f"<b>Preis</b>: {promo.get('price')} €\n"
+        f"<b>Versandkosten</b>: {promo.get('shipping_costs')} €\n"
+        f"<b>Ausgabekanal</b>: {promo.get('channel_id')}\n"
+        f"<b>Startdatum</b>: {promo.get('start_date')}\n"
+        f"<b>Enddatum</b>: {promo.get('end_date', '–')}\n"
+        f"<b>Bild</b>: {promo.get('image', '–')}\n\n"
+        f"<b>Nachricht</b>:\n{promo.get('display_message')}\n\n"
+        f"<b>Beschreibung</b>:\n{promo.get('description')}\n\n"
+        f"<b>{'🚫 Promo ist blockiert. Für mehr Informationen wende dich an den Kundenservice.' if promo.get('blocked', False) else ''}</b>"
+    )
+
+
+PROMO_FIELD_LABELS = {
+    "display_name": "Name",
+    "price": "Preis",
+    "shipping_costs": "Versandkosten",
+    "channel_id": "Ausgabekanal",
+    "start_date": "Startdatum",
+    "end_date": "Enddatum",
+    "image": "Bild",
+    "message": "Nachricht",
+    "description": "Beschreibung",
+}
+
+
+PROMO_VALIDATOR_MAP = {
+    "display_name": validate_string_length_max_50,
+    "price": validate_decimal,
+    "shipping_costs": validate_decimal,
+    "channel_id": validate_telegram_username,
+    "start_date": validate_date,
+    "end_date": validate_date,
+    "image": validate_url,
+    "message": validate_string_length_max_50,
+    "description": validate_string_length_max_100,
+}

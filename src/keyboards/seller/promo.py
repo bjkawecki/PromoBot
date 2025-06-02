@@ -33,9 +33,7 @@ def get_promo_list_keyboard(promo_list: list[dict]) -> InlineKeyboardMarkup:
             ]
         )
 
-    buttons.append(
-        [InlineKeyboardButton(text="🔙 Zurück", callback_data="back_to_start")]
-    )
+    buttons.append([InlineKeyboardButton(text="🔙 Zurück", callback_data="promo_menu")])
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -77,12 +75,10 @@ def get_promo_menu_keyboard() -> InlineKeyboardMarkup:
     )
 
 
-def get_promo_detailview_keyboard(
-    promo_id: str, is_active: bool
-) -> InlineKeyboardMarkup:
+def get_promo_detailview_keyboard(promo_id: str, status: bool) -> InlineKeyboardMarkup:
     inline_keyboard = []
-    action = "d" if is_active else "a"
-    if is_active:
+    action = "d" if status == "active" else "a"
+    if status == "active":
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
@@ -95,13 +91,17 @@ def get_promo_detailview_keyboard(
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
-                    text="✅ Aktivieren",
+                    text="🔛 Aktivieren",
                     callback_data=f"promo_status:{promo_id}:{action}",
                 )
             ]
         )
     inline_keyboard.append(
-        [InlineKeyboardButton(text="Promo bearbeiten", callback_data="update_promo")]
+        [
+            InlineKeyboardButton(
+                text="Promo bearbeiten", callback_data=f"edit_promo:{promo_id}"
+            )
+        ]
     )
 
     inline_keyboard.append(
@@ -127,6 +127,71 @@ def get_confirm_toggle_promo_status_keyboard(promo_id, action):
                     text="❌ Abbrechen",
                     callback_data=f"cancel_toggle_promo:{promo_id}",
                 ),
+            ]
+        ]
+    )
+
+
+def get_edit_promo_keyboard(
+    promo_id: str, PROMO_FIELD_LABELS: dict
+) -> InlineKeyboardMarkup:
+    buttons = []
+    for item in PROMO_FIELD_LABELS:
+        buttons.append(
+            [
+                InlineKeyboardButton(
+                    text=PROMO_FIELD_LABELS[item],
+                    callback_data=f"edit_promo_field:{item}",
+                )
+            ]
+        )
+    buttons.append(
+        [
+            InlineKeyboardButton(
+                text="❌ Abbrechen",
+                callback_data=f"promo_detail:{promo_id}",
+            )
+        ]
+    )
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_abort_edit_promo_field_keyboard(promo_id):
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="❌ Abbrechen", callback_data=f"edit_promo:{promo_id}"
+                ),
+            ]
+        ]
+    )
+
+
+def get_confirm_edit_promo_keyboard(promo_id: str):
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="✅ Speichern", callback_data=f"confirm_edit_promo:{promo_id}"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="❌ Abbrechen", callback_data="cancel_edit_promo"
+                )
+            ],
+        ]
+    )
+
+
+def get_back_to_promo_detailview_keyboard(promo_id):
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="🔙 Zurück", callback_data=f"promo_detail:{promo_id}"
+                )
             ]
         ]
     )

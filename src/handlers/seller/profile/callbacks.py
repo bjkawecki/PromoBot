@@ -14,7 +14,7 @@ from keyboards.seller.update import (
     get_update_seller_profile_keyboard,
 )
 from states.seller import EditSellerField, SellerState
-from utils.misc import FIELD_LABELS
+from utils.misc import SELLER_FIELD_LABELS
 
 router = Router()
 
@@ -125,7 +125,7 @@ async def edit_seller_profile_field_callback(
     current_value = seller.get(field, "Kein Wert gesetzt")
 
     await state.update_data(field=field)
-    field_label = FIELD_LABELS.get(field, field)
+    field_label = SELLER_FIELD_LABELS.get(field, field)
     await callback.message.edit_text(
         f"<b>{field_label}</b>:\n\n{current_value}\n\n📝 Bitte gib den neuen Wert ein:",
         reply_markup=get_abort_update_seller_keyboard(),
@@ -144,7 +144,7 @@ async def confirm_seller_profile_update_field(
     data = await state.get_data()
     field = data["field"]
     new_value = data["new_value"]
-    field_label = FIELD_LABELS.get(field, field)
+    field_label = SELLER_FIELD_LABELS.get(field, field)
     update_seller_field(callback.from_user.id, field, new_value)
 
     await callback.message.edit_text(

@@ -31,3 +31,8 @@ class PromoState(StatesGroup):
     end_date = State()
     options = State()
     confirm = State()
+
+
+class EditPromoField(StatesGroup):
+    waiting_for_field_value = State()
+    confirm_new_value = State()

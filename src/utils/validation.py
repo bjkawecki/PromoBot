@@ -1,5 +1,6 @@
 import io
 import re
+from decimal import Decimal, InvalidOperation
 from urllib.parse import urlparse
 
 from aiogram.types import Message
@@ -13,12 +14,13 @@ TELEGRAM_USERNAME_REGEX = re.compile(r"^@?[a-zA-Z0-9_]{5,32}$")
 STRIPE_ACCOUNT_ID_REGEX = re.compile(r"^acct_[a-zA-Z0-9]{24}$")
 
 
+def is_valid_length(text: str, min_length: int = 1, max_length: int = 100) -> bool:
+    return min_length <= len(text.strip()) <= max_length
+
+
 async def validate_string_length_max_50(
     message: Message, value: str, field_name="Wert"
 ) -> str | None:
-    def is_valid_length(text: str, min_length: int = 1, max_length: int = 100) -> bool:
-        return min_length <= len(text.strip()) <= max_length
-
     try:
         if is_valid_length(value, min_length=3, max_length=50):
             return value
@@ -30,12 +32,40 @@ async def validate_string_length_max_50(
         )
 
 
+async def validate_string_length_max_100(
+    message: Message, value: str, field_name="Wert"
+) -> str | None:
+    try:
+        if is_valid_length(value, min_length=3, max_length=100):
+            return value
+    except ValueError:
+        await message.answer(
+            "❌ Ungültiger Wert. Eingabe muss zwischen 3 und 100 Zeichen lang sein.\n\n"
+            "Bitte versuche es erneut oder drücke auf 'Abbrechen':",
+            get_abort_keyboard(),
+        )
+
+
 async def validate_int(message: Message, value: str, field_name="Wert") -> int | None:
     try:
         return int(value)
     except ValueError:
         await message.answer(
             f"❌ Ungültiger {field_name}: Bitte gib eine ganze Zahl ein oder drücke auf 'Abbrechen':",
+            reply_markup=get_abort_keyboard(),
+        )
+        return None
+
+
+async def validate_decimal(
+    message: Message, value: str, field_name="Wert"
+) -> Decimal | None:
+    try:
+        number = Decimal(value)
+        return number
+    except InvalidOperation:
+        await message.answer(
+            f"❌ Ungültiger {field_name}: Bitte gib eine gültige Dezimalzahl ein (z. B. 19.99):",
             reply_markup=get_abort_keyboard(),
         )
         return None

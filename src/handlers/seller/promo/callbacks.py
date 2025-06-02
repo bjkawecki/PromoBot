@@ -9,18 +9,24 @@ from config import verkaeufer_kanal_id
 from database.repositories.promos import (
     create_promotion,
     get_promo_by_id,
+    get_promo_field,
     get_promotions_by_seller_id,
     save_promo,
+    update_promo_field,
 )
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
 from keyboards.seller.promo import (
+    get_abort_edit_promo_field_keyboard,
+    get_back_to_promo_detailview_keyboard,
     get_confirm_toggle_promo_status_keyboard,
+    get_edit_promo_keyboard,
     get_inline_keyboard,
     get_promo_detailview_keyboard,
     get_promo_list_keyboard,
     get_promo_menu_keyboard,
 )
-from states.seller import PromoState
+from states.seller import EditPromoField, PromoState
+from utils.misc import PROMO_FIELD_LABELS, get_promo_details
 
 router = Router()
 
@@ -56,7 +62,6 @@ async def start_create_promo(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "confirm_create_promo")
 async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    print(data)
     new_promo = {
         "promo_id": data.get("promo_id"),
         "seller_id": data.get("seller_id"),
@@ -69,8 +74,7 @@ async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMConte
         "start_date": data.get("start_date"),
         "end_data": data.get("end_date"),
         "image": data.get("image", ""),
-        "blocked": False,
-        "active": False,
+        "status": "inactive",
     }
 
     _, msg = create_promotion(data=new_promo)
@@ -117,28 +121,16 @@ async def send_product_promo(callback: CallbackQuery, bot):
 async def promo_detailview_callback(callback: CallbackQuery):
     seller_id = callback.from_user.id
     promo_id = callback.data.split(":")[1]
+
     promo = get_promo_by_id(promo_id, seller_id)
-    is_active = promo.get("active", False)
-    promo_details = (
-        f"<b>🔎 Promo Details</b>\n\n"
-        f"<b>{promo.get('display_name')}</b>\n\n"
-        f"<b>Status</b>: {'aktiv ✅' if is_active else 'nicht aktiv ❌'}\n"
-        f"<b>Stückpreis</b>: {promo.get('price')}\n"
-        f"<b>Versandkosten</b>: {promo.get('shipping_costs')}\n"
-        f"<b>Ausgabekanal</b>: {promo.get('channel_id')}\n"
-        f"<b>Startdatum</b>: {promo.get('start_date')}\n"
-        f"<b>Enddatum</b>: {promo.get('end_date', '–')}\n"
-        f"<b>Bild</b>: {promo.get('image', '–')}\n\n"
-        f"<b>Nachricht</b>:\n{promo.get('display_message')}\n\n"
-        f"<b>Beschreibung</b>:\n{promo.get('description')}\n\n"
-        f"<b>{'🚫 Promo ist blockiert. Für mehr Informationen wende dich an den Kundenservice.' if promo.get('blocked', False) else ''}</b>"
-    )
 
     if not promo:
         await callback.answer("Promo nicht gefunden.")
         return
+    status = promo.get("status", False)
+    promo_details = get_promo_details(promo)
 
-    keyboard = get_promo_detailview_keyboard(promo_id, is_active)
+    keyboard = get_promo_detailview_keyboard(promo_id, status)
 
     await callback.message.answer(
         promo_details, reply_markup=keyboard, parse_mode="HTML"
@@ -179,15 +171,79 @@ async def confirm_toggle_callback(callback: CallbackQuery):
         await callback.message.answer("❌ Promo nicht gefunden.")
         return
 
-    promo["active"] = True if action == "a" else False
+    promo["status"] = "active" if action == "a" else "inactive"
     save_promo(promo)
 
     status_text = (
         "✅ Promo wurde aktiviert."
-        if promo["active"]
+        if promo["status"] == "active"
         else "🚫 Promo wurde deaktiviert."
     )
     await callback.answer(status_text)
 
     await promo_detailview_callback(callback)
     await callback.answer()
+
+
+@router.callback_query(F.data.startswith("edit_promo:"))
+async def edit_promo_callback(callback: CallbackQuery, state: FSMContext):
+    _, promo_id = callback.data.split(":")
+    await state.update_data(promo_id=promo_id)
+    keyboard = get_edit_promo_keyboard(promo_id, PROMO_FIELD_LABELS)
+    await callback.message.edit_text(
+        "<b>Promo bearbeiten</b>\n\nWähle ein Feld zum Bearbeiten:",
+        reply_markup=keyboard,
+        parse_mode="HTML",
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("edit_promo_field:"))
+async def edit_promo_field_callback(callback: CallbackQuery, state: FSMContext):
+    seller_id = callback.from_user.id
+    _, field = callback.data.split(":")
+    await state.update_data({"field": field})
+    data = await state.get_data()
+    promo_id = data.get("promo_id")
+    field_value = get_promo_field(promo_id, seller_id, field)
+    field_label = PROMO_FIELD_LABELS.get(field)
+    await state.update_data(promo_id=promo_id, field=field)
+    await callback.message.edit_text(
+        f"<b>Änderung der Promo</b>\n\n"
+        f"<b>{field_label}:</b> {field_value}\n\n"
+        "📝 Bitte mach eine neue Eingabe.",
+        reply_markup=get_abort_edit_promo_field_keyboard(promo_id),
+        parse_mode="HTML",
+    )
+    await state.set_state(EditPromoField.waiting_for_field_value)
+
+
+@router.callback_query(F.data.startswith("confirm_edit_promo"))
+async def confirm_save_callback(callback: CallbackQuery, state: FSMContext):
+    _, promo_id = callback.data.split(":")
+    seller_id = callback.from_user.id
+    data = await state.get_data()
+    seller_id = callback.from_user.id
+    field = data["field"]
+    new_value = data["new_value"]
+    try:
+        update_promo_field(promo_id, seller_id, field, new_value)
+        await callback.answer("✅ Promo wurde aktualisiert.")
+    except Exception as e:
+        await callback.message.edit_text(f"❌ Fehler beim Speichern: {e}")
+
+    await promo_detailview_callback(callback)
+    await state.clear()
+
+
+@router.callback_query(F.data == "cancel_edit_promo")
+async def cancel_edit_callback(callback: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    promo_id = data.get("promo_id")
+    await callback.message.edit_text(
+        "❌ Bearbeitung abgebrochen.",
+        reply_markup=get_back_to_promo_detailview_keyboard(promo_id),
+        parse_mode="HTML",
+    )
+
+    await state.clear()

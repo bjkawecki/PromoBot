@@ -10,7 +10,7 @@ from keyboards.seller.create import (
 )
 from keyboards.seller.update import get_confirm_update_seller_field_keyboard
 from states.seller import EditSellerField, SellerState
-from utils.misc import FIELD_LABELS, VALIDATOR_LABELS
+from utils.misc import SELLER_FIELD_LABELS, SELLER_VALIDATOR_METHODS_MAP
 from utils.validation import (
     validate_email,
     validate_phone,
@@ -178,8 +178,8 @@ async def receive_new_field_value(message: Message, state: FSMContext):
     value = message.text.strip()
     data = await state.get_data()
     field = data["field"]
-    field_label = FIELD_LABELS.get(field, field)
-    validator = VALIDATOR_LABELS.get(field)
+    field_label = SELLER_FIELD_LABELS.get(field, field)
+    validator = SELLER_VALIDATOR_METHODS_MAP.get(field)
 
     if not validator:
         await message.answer("❌ Für dieses Feld ist keine Validierung definiert.")

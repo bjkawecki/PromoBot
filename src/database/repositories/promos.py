@@ -85,3 +85,25 @@ def get_promo_by_id(promo_id: str, seller_id: int):
 
 def save_promo(promo_data: dict):
     table.put_item(Item=promo_data)
+
+
+def get_promo_field(promo_id: str, seller_id: int, field) -> str | None:
+    try:
+        response = table.get_item(Key={"promo_id": promo_id, "seller_id": seller_id})
+    except ClientError as e:
+        print(f"❌ Fehler beim Zugriff auf DynamoDB: {e.response['Error']['Message']}")
+        return None
+
+    item = response.get("Item")
+    if not item:
+        return None
+
+    return item.get(field)
+
+
+def update_promo_field(promo_id: int, seller_id: str, field: str, new_value: any):
+    table.update_item(
+        Key={"promo_id": promo_id, "seller_id": seller_id},
+        UpdateExpression=f"SET {field} = :val",
+        ExpressionAttributeValues={":val": new_value},
+    )
