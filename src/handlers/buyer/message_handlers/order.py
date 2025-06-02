@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from handlers.buyer.order.common import show_order_summary
+from handlers.buyer.callbacks.order import show_order_summary
 from keyboards.buyer.order import get_cancel_collect_order_details_keyboard
 from states.buyer import OrderState
 

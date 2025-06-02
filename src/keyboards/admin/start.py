@@ -12,7 +12,7 @@ def get_admin_keyboard():
             ],
             [
                 InlineKeyboardButton(
-                    text="📃 Verkäuferliste", callback_data="display_sellers"
+                    text="📃 Verkäuferliste", callback_data="seller_list_menu"
                 )
             ],
             [

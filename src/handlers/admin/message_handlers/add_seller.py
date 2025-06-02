@@ -12,8 +12,8 @@ from utils.validation import validate_telegram_user_id
 router = Router()
 
 
-@router.message(AddSeller.waiting_for_username)
-async def save_seller_username(message: Message, state: FSMContext):
+@router.message(AddSeller.waiting_for_seller_telegram_id)
+async def save_seller_telegram_id(message: Message, state: FSMContext):
     telegram_user_id = await validate_telegram_user_id(message, message.text)
     if not telegram_user_id:
         return

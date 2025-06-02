@@ -1,7 +1,9 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def get_seller_detail_keyboard(telegram_id: int, active: bool) -> InlineKeyboardMarkup:
+def get_seller_details_menu_keyboard(
+    telegram_id: int, active: bool
+) -> InlineKeyboardMarkup:
     inline_keyboard = []
 
     if active:
@@ -9,7 +11,7 @@ def get_seller_detail_keyboard(telegram_id: int, active: bool) -> InlineKeyboard
             [
                 InlineKeyboardButton(
                     text="🚫 Deaktivieren",
-                    callback_data=f"seller_toggle:{telegram_id}:deactivate",
+                    callback_data=f"seller_toggle_is_active:{telegram_id}:deactivate",
                 )
             ]
         )
@@ -18,7 +20,7 @@ def get_seller_detail_keyboard(telegram_id: int, active: bool) -> InlineKeyboard
             [
                 InlineKeyboardButton(
                     text="✅ Aktivieren",
-                    callback_data=f"seller_toggle:{telegram_id}:activate",
+                    callback_data=f"seller_toggle_is_active:{telegram_id}:activate",
                 )
             ]
         )
@@ -36,7 +38,7 @@ def get_seller_detail_keyboard(telegram_id: int, active: bool) -> InlineKeyboard
         [
             InlineKeyboardButton(
                 text="🔙 Zurück zur Übersicht",
-                callback_data="display_sellers",
+                callback_data="seller_list_menu",
             )
         ]
     )
@@ -88,7 +90,7 @@ def get_seller_list_keyboard(sellers: list[dict]) -> InlineKeyboardMarkup:
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text=button_text, callback_data=f"seller_detail:{telegram_id}"
+                    text=button_text, callback_data=f"seller_details_menu:{telegram_id}"
                 )
             ]
         )

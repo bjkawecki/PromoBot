@@ -24,7 +24,7 @@ def get_main_menu_deeplink() -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(
                     text="🔍 Produktbeschreibung",
-                    callback_data="display_product_description",
+                    callback_data="product_details_menu",
                 ),
             ],
             [
