@@ -44,7 +44,7 @@ async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMConte
         "start_date": data.get("start_date"),
         "end_data": data.get("end_date"),
         "image": data.get("image", ""),
-        "status": "inactive",
+        "promo_status": "inactive",
     }
 
     _, msg = create_promotion(data=new_promo)

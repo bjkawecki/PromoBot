@@ -2,10 +2,8 @@
 
 ## Admin
 
-- promos view: list, emphasize status
-- promo view: details with buttons "Blockieren/Freigeben", "Löschen", "Endgültig löschen"
+- promos view: emphasize status, add buttons "Blockieren/Freigeben", "Löschen", "Endgültig löschen"
   - damit eine Promo gelöscht werden kann, muss es den Status "deleted" haben
-- promo action: hard delete
 
 ## Seller
 

@@ -50,7 +50,7 @@ def get_promotions_by_seller_id(seller_id: int):
     try:
         response = table.query(
             KeyConditionExpression=Key("seller_id").eq(seller_id),
-            FilterExpression=Attr("status").ne("deleted"),
+            FilterExpression=Attr("promo_status").ne("deleted"),
         )
         return response.get("Items", [])
     except Exception as e:
@@ -79,7 +79,7 @@ def count_promos_for_seller(seller_id_raw: int) -> int:
     table = dynamodb.Table("promotions")
     response = table.query(
         KeyConditionExpression=Key("seller_id").eq(seller_id),
-        FilterExpression=Attr("status").ne("deleted"),
+        FilterExpression=Attr("promo_status").ne("deleted"),
     )
     return len(response.get("Items", []))
 
@@ -93,7 +93,7 @@ def count_active_promos_for_seller(seller_id: int) -> int:
         KeyConditionExpression=Key("seller_id").eq(seller_id),
         FilterExpression=Attr("start_date").lte(today)
         & Attr("end_date").gte(today)
-        & Attr("status").ne("deleted"),
+        & Attr("promo_status").ne("deleted"),
     )
     return len(response.get("Items", []))
 
@@ -147,8 +147,7 @@ def set_promo_status_to_deleted(promo_id: int, seller_id: str):
     try:
         table.update_item(
             Key={"promo_id": promo_id, "seller_id": seller_id},
-            UpdateExpression="SET #status = :deleted",
-            ExpressionAttributeNames={"#status": "status"},
+            UpdateExpression="SET promo_status = :deleted",
             ExpressionAttributeValues={":deleted": "deleted"},
         )
     except Exception as e:

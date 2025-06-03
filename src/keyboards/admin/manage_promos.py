@@ -15,7 +15,8 @@ def get_admin_promo_list_keyboard(promo_list: list[dict]) -> InlineKeyboardMarku
     for promo in promo_list:
         promo_id = promo.get("promo_id")
         display_name = promo.get("display_name")
-        button_text = f" {display_name}"
+        promo_status = promo.get("promo_status")
+        button_text = f"{display_name}\n{promo_status}"
         buttons.append(
             [
                 InlineKeyboardButton(

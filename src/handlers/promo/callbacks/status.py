@@ -42,12 +42,12 @@ async def confirm_toggle_callback(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer("❌ Promo nicht gefunden.")
         return
 
-    promo["status"] = "active" if action == "a" else "inactive"
+    promo["promo_status"] = "active" if action == "a" else "inactive"
     save_promo(promo)
 
     status_text = (
         "✅ Promo wurde aktiviert."
-        if promo["status"] == "active"
+        if promo["promo_status"] == "active"
         else "🚫 Promo wurde deaktiviert."
     )
     await callback.answer(status_text)

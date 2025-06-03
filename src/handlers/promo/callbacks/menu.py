@@ -7,7 +7,7 @@ from database.repositories.promos import (
     get_promotions_by_seller_id,
 )
 from handlers.promo.message_handlers.menu import send_promo_detailview
-from keyboards.admin.manage_promos import get_admin_promo_list_keyboard
+from keyboards.common import get_promo_list_keyboard
 from keyboards.seller.promo import get_promo_menu_keyboard
 
 router = Router()
@@ -30,7 +30,7 @@ async def seller_promo_list_menu_callback(callback: CallbackQuery, state: FSMCon
     if not promo_list:
         await callback.answer("❌ Du hast noch keine Promos erstellt.")
         return
-    keyboard = get_admin_promo_list_keyboard(promo_list)
+    keyboard = get_promo_list_keyboard(promo_list)
     await callback.message.answer("Wähle eine Promo aus:", reply_markup=keyboard)
     await callback.answer()
 
@@ -44,5 +44,5 @@ async def promo_details_menu_callback(callback: CallbackQuery, state: FSMContext
     if not promo:
         await callback.answer("Promo nicht gefunden.")
         return
-    await send_promo_detailview(callback.message, promo, seller_id)
+    await send_promo_detailview(callback.message, promo)
     await callback.answer()
