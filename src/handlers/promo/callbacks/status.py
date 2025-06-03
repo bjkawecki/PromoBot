@@ -2,7 +2,7 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
-from database.repositories.promos import get_promo_by_id, save_promo
+from database.repositories.promos import get_promo_by_promo_id_and_seller_id, save_promo
 from handlers.promo.callbacks.menu import seller_promo_list_menu_callback
 from keyboards.seller.promo import get_confirm_toggle_promo_status_keyboard
 
@@ -37,7 +37,7 @@ async def confirm_toggle_callback(callback: CallbackQuery, state: FSMContext):
     seller_id = callback.from_user.id
     _, promo_id, action = callback.data.split(":")
 
-    promo = get_promo_by_id(promo_id=promo_id, seller_id=seller_id)
+    promo = get_promo_by_promo_id_and_seller_id(promo_id=promo_id, seller_id=seller_id)
     if not promo:
         await callback.message.answer("❌ Promo nicht gefunden.")
         return

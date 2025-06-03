@@ -14,7 +14,7 @@ welcome_text = (
 
 def get_role_welcome_message_text(role: str, seller):
     if role == "admin":
-        return "*Willkommen, Admin*\\!\n\n🗂 Verwalte Verkäufer und ihre Promos\\.\n\nAktuell gibt es"
+        return "*Willkommen, Admin*\\!\n\n🗂 Verwalte Verkäufer und ihre Promos\\.\n\n"
     elif role == "seller":
         seller_status = seller.get("seller_status")
         if seller_status == "active" and not seller.get("is_registered", False):

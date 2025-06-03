@@ -58,6 +58,22 @@ def get_promotions_by_seller_id(seller_id: int):
         return []
 
 
+def get_promotion_list():
+    try:
+        response = table.scan()
+        items = response.get("Items", [])
+
+        while "LastEvaluatedKey" in response:
+            response = table.scan(ExclusiveStartKey=response["LastEvaluatedKey"])
+            items.extend(response.get("Items", []))
+
+        return items
+
+    except Exception as e:
+        print(f"❌ Fehler beim Abfragen der Promos: {e}")
+        return []
+
+
 def count_promos_for_seller(seller_id_raw: int) -> int:
     seller_id = int(seller_id_raw)
     table = dynamodb.Table("promotions")
@@ -82,13 +98,23 @@ def count_active_promos_for_seller(seller_id: int) -> int:
     return len(response.get("Items", []))
 
 
-def get_promo_by_id(promo_id: str, seller_id: int):
+def get_promo_by_promo_id_and_seller_id(promo_id: str, seller_id: int):
     try:
         response = table.get_item(Key={"promo_id": promo_id, "seller_id": seller_id})
     except ClientError as e:
         print(f"❌ Fehler beim Zugriff auf DynamoDB: {e.response['Error']['Message']}")
         return None
     return response.get("Item")
+
+
+def get_promo_by_promo_id(promo_id: str):
+    try:
+        response = table.scan(FilterExpression=Attr("promo_id").eq(promo_id))
+        items = response.get("Items", [])
+        return items[0] if items else None
+    except ClientError as e:
+        print(f"❌ Fehler beim Zugriff auf DynamoDB: {e.response['Error']['Message']}")
+        return None
 
 
 def save_promo(promo_data: dict):
