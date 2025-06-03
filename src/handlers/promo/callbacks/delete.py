@@ -17,12 +17,12 @@ async def delete_promo_callback(callback: CallbackQuery, state: FSMContext):
     try:
         _, promo_id = callback.data.split(":", 1)  # Falls mehr ":" enthalten sind
         data = await state.get_data()
-        promo_name = data.get("promo_name", "Unbekannte Promo")  # Fallback
+        promo_name = data.get("display_name", "Unbekannte Promo")  # Fallback
 
         # promo_id im State speichern für spätere Bestätigung
         await state.update_data(promo_id=promo_id)
 
-        await callback.message.edit_text(
+        await callback.message.answer(
             f"❗️<b>Bist du sicher, dass du die folgende Promo löschen möchtest?</b>\n\n"
             f"<b>{promo_name}</b>",
             reply_markup=get_confirm_delete_promo_keyboard(promo_id),
@@ -48,7 +48,7 @@ async def confirm_delete_promo_callback(callback: CallbackQuery, state: FSMConte
     data = await state.get_data()
     promo_id = data.get("promo_id", "")
     data = await state.get_data()
-    promo_name = data.get("promo_name")
+    promo_name = data.get("display_name")
     try:
         set_promo_status_to_deleted(promo_id, seller_id)
         await callback.message.edit_text(

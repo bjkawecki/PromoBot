@@ -38,7 +38,7 @@ async def edit_promo_field_callback(callback: CallbackQuery, state: FSMContext):
     field_value = get_promo_field(promo_id, seller_id, field)
     field_label = PROMO_FIELD_LABELS.get(field)
     await state.update_data(promo_id=promo_id, field=field)
-    await callback.message.edit_text(
+    await callback.message.answer(
         f"<b>Änderung der Promo</b>\n\n"
         f"<b>{field_label}:</b> {field_value}\n\n"
         "📝 Bitte mach eine neue Eingabe.",

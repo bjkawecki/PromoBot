@@ -3,15 +3,11 @@
 ## Admin
 
 - promos view: list, emphasize status
-- promo view: details
-- promo action: set_status: blocked, deleted
+- promo view: details with buttons "Blockieren/Freigeben", "Löschen", "Endgültig löschen"
+- damit eine Promo gelöscht werden kann, muss es den Status "deleted" haben
 - promo action: hard delete
 - seller action: block/unblock
 - seller action: hard delete
-
-## Promo
-
-- show promo image in detail view
 
 ## Seller
 
@@ -29,10 +25,6 @@
   - is blocked
   - date is between start_date and end_date
 
-## Validation
+## Refactor
 
-- seller: create promo
-
-## Messages
-
-- refactor messages to src/messages/
+- move text messages to src/messages, check for redundancy

@@ -19,7 +19,7 @@ def upload_image_to_s3(
 
 
 def generate_presigned_url(
-    key: str, bucket: str = AWS_BUCKET_NAME, expires_in: int = 3600
+    key: str, bucket: str = AWS_BUCKET_NAME, expires_in: int = 60
 ) -> str:
     return s3.generate_presigned_url(
         ClientMethod="get_object",
