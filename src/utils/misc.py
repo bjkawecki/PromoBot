@@ -78,21 +78,19 @@ def get_seller_info(seller: object):
     )
 
 
-def get_promo_details(promo: object):
+def format_promo_details(promo: object):
     status = promo.get("status")
     return (
         f"<b>🔎 Promo Details</b>\n\n"
         f"<b>{promo.get('display_name')}</b>\n\n"
-        f"<b>Status</b>: {'aktiv ✅' if status == 'active' else 'nicht aktiv ❌'}\n"
-        f"{promo.get('status')}\n"
-        f"<b>Preis</b>: {promo.get('price')} €\n"
-        f"<b>Versandkosten</b>: {promo.get('shipping_costs')} €\n"
-        f"<b>Ausgabekanal</b>: {promo.get('channel_id')}\n"
-        f"<b>Startdatum</b>: {promo.get('start_date')}\n"
-        f"<b>Enddatum</b>: {promo.get('end_date', '–')}\n"
-        f"<b>Bild</b>: {promo.get('image', '–')}\n\n"
-        f"<b>Nachricht</b>:\n{promo.get('display_message')}\n\n"
-        f"<b>Beschreibung</b>:\n{promo.get('description')}\n\n"
+        f"<b>Status:</b> {'aktiv ✅' if status == 'active' else 'nicht aktiv ❌'}\n"
+        f"<b>Preis:</b> {promo.get('price')} €\n"
+        f"<b>Versandkosten:</b> {promo.get('shipping_costs')} €\n"
+        f"<b>Ausgabekanal:</b> {promo.get('channel_id')}\n"
+        f"<b>Startdatum:</b> {promo.get('start_date')}\n"
+        f"<b>Enddatum:</b> {promo.get('end_date', '–')}\n"
+        f"<b>Nachricht:</b>\n{promo.get('display_message')}\n\n"
+        f"<b>Beschreibung:</b>\n{promo.get('description')}\n\n"
         f"<b>{'🚫 Promo ist blockiert. Für mehr Informationen wende dich an den Kundenservice.' if promo.get('blocked', False) else ''}</b>"
     )
 

@@ -9,6 +9,10 @@
 - seller action: block/unblock
 - seller action: hard delete
 
+## Promo
+
+- show promo image in detail view
+
 ## Seller
 
 - help/FAQ:

@@ -3,12 +3,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from database.repositories.promos import get_promo_by_id, get_promotions_by_seller_id
+from handlers.promo.message_handlers.menu import send_promo_detailview
 from keyboards.seller.promo import (
     get_promo_detailview_keyboard,
     get_promo_list_keyboard,
     get_promo_menu_keyboard,
 )
-from utils.misc import get_promo_details
+from utils.misc import format_promo_details
 
 router = Router()
 
@@ -39,20 +40,9 @@ async def seller_promo_list_menu_callback(callback: CallbackQuery, state: FSMCon
 async def promo_details_menu_callback(callback: CallbackQuery, state: FSMContext):
     seller_id = callback.from_user.id
     promo_id = callback.data.split(":")[1]
-
     promo = get_promo_by_id(promo_id, seller_id)
-
     if not promo:
         await callback.answer("Promo nicht gefunden.")
         return
-    status = promo.get("status", False)
-    promo_name = promo.get("display_name", "")
-    await state.update_data(promo_name=promo_name)
-    promo_details = get_promo_details(promo)
-
-    keyboard = get_promo_detailview_keyboard(promo_id, status)
-
-    await callback.message.answer(
-        promo_details, reply_markup=keyboard, parse_mode="HTML"
-    )
+    await send_promo_detailview(callback.message, promo)
     await callback.answer()

@@ -26,7 +26,7 @@ def create_promotion(data: dict):
         "start_date": data.get("start_date"),  # ISO-Format erwartet: '2025-05-26'
         "end_date": data.get("end_date"),
         "display_name": data.get("display_name"),
-        "image_url": data.get("image_url"),
+        "image": data.get("image"),
         "description": data.get("description"),
         "price": safe_parse_decimal(data.get("price", 0.0)),
         "shipping_costs": safe_parse_decimal(data.get("shipping_costs", 0.0)),

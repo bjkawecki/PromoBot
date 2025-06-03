@@ -94,8 +94,7 @@ async def create_promo_description(message: Message, state: FSMContext):
     await state.set_state(PromoState.description)
     await message.answer(
         "📄 Neue Promo erstellen (5/9)\n\n<b>Erstelle eine Beschreibung</b>\n\n"
-        "Ein detaillierte Beschreibung, die Käufer bei der Interaktion mit dem Bot abrufen können.\n\n"
-        "(optional)",
+        "Ein detaillierte Beschreibung, die Käufer bei der Interaktion mit dem Bot abrufen können.",
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -163,13 +162,12 @@ async def create_promo_image(message: Message, state: FSMContext):
     end_date = await validate_date(message, end_date, "Enddatum")
     if end_date is None:
         return
-    await state.update_data(end_date=message.text)
+    await state.update_data(end_date=end_date)
     await state.set_state(PromoState.image)
 
     await message.answer(
         "📄 Neue Promo erstellen (9/9)\n\n<b>Füge ein Bild hinzu</b>\n\n"
-        "Das Bild wird Teil der Werbenachricht.\n\n"
-        "(Optional)",
+        "Das Bild wird Teil der Werbenachricht.",
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )

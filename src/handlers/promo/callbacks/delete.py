@@ -40,7 +40,6 @@ async def cancel_delete_seller_callback(callback: CallbackQuery, state: FSMConte
     await callback.answer("❎ Vorgang abgebrochen.")
     await promo_details_menu_callback(callback, state)
     await callback.answer()
-    await state.clear()
 
 
 @router.callback_query(F.data == "confirm_delete_promo")

@@ -1,4 +1,5 @@
 from aiogram import F, Router
+from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from database.repositories.promos import get_promo_by_id, save_promo
@@ -32,7 +33,7 @@ async def cancel_toggle_callback(callback: CallbackQuery):
 
 
 @router.callback_query(F.data.startswith("confirm_toggle_promo:"))
-async def confirm_toggle_callback(callback: CallbackQuery):
+async def confirm_toggle_callback(callback: CallbackQuery, state: FSMContext):
     seller_id = callback.from_user.id
     _, promo_id, action = callback.data.split(":")
 
@@ -51,5 +52,5 @@ async def confirm_toggle_callback(callback: CallbackQuery):
     )
     await callback.answer(status_text)
 
-    await seller_promo_list_menu_callback(callback)
+    await seller_promo_list_menu_callback(callback, state)
     await callback.answer()
