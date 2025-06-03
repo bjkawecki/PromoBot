@@ -140,7 +140,7 @@ async def set_website_name(message: Message, state: FSMContext):
         f"Anzeigename: {data.get('display_name')}\n"
         f"E-Mail: {data.get('contact_email', '–')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
-        f"website: {data.get('website', '–')}\n"
+        f"Webseite: {data.get('website', '–')}\n"
         "\nBitte gib die <b>ID deines Stripe-Kontos</b> an (optional, benötigt für das Starten von Promos):",
         reply_markup=get_optional_website_field_keyboard(),
         parse_mode="HTML",
@@ -164,7 +164,7 @@ async def set_stripe_account_id(message: Message, state: FSMContext):
         f"Anzeigename: {data.get('display_name')}\n"
         f"E-Mail: {data.get('contact_email', '–')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
-        f"website: {data.get('website', '–')}\n"
+        f"Webseite: {data.get('website', '–')}\n"
         f"Stripe-Konto-ID: {data.get('stripe_account_id', '–')}\n"
         "\n✅ <b>Der Registriervorgang als Verkäufer ist abgeschlossen!<b>\n\n"
         "Du kannst nun <b>Promos</b> hinzufügen oder dein <b>Profil</b> bearbeiten.\n\n",

@@ -15,7 +15,7 @@ router = Router()
 @router.callback_query(F.data == "promo_menu")
 async def promo_menu_callback(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_text(
-        "<b>📢 Promo-Menu</b>",
+        "<b>📢 Promo-Menü</b>",
         reply_markup=get_promo_menu_keyboard(),
         parse_mode="HTML",
     )

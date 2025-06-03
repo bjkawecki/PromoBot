@@ -60,7 +60,7 @@ async def skip_add_website_handler(callback_query: CallbackQuery, state: FSMCont
         f"Anzeigename: {data.get('display_name')}\n"
         f"E-Mail: {data.get('contact_email')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
-        f"website: {data.get('website', '–')}\n"
+        f"Webseite: {data.get('website', '–')}\n"
         "\nBitte gib die <b>ID deines Stripe-Kontos</b> an (optional, benötigt für das Starten von Promos):",
         reply_markup=get_optional_stripe_id_field_keyboard(),
         parse_mode="HTML",
@@ -80,7 +80,7 @@ async def skip_add_stripe_id_handler(callback_query: CallbackQuery, state: FSMCo
         f"Anzeigename: {data.get('display_name')}\n"
         f"E-Mail: {data.get('contact_email')}\n"
         f"Telefon: {data.get('contact_phone', '–')}\n"
-        f"website: {data.get('website', '–')}\n"
+        f"Webseite: {data.get('website', '–')}\n"
     )
 
     if data.get("stripe_account_id"):

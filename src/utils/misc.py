@@ -44,7 +44,7 @@ SELLER_FIELD_LABELS = {
     "contact_name": "Ansprechpartner",
     "contact_email": "E-Mail",
     "contact_phone": "Telefonnummer",
-    "website": "Webseite",
+    "Webseite": "Webseite",
     "stripe_account_id": "Stripe-Konto-ID",
 }
 
@@ -78,7 +78,7 @@ def get_seller_info(seller: object):
         f"Ansprechperson: {seller.get('contact_name', '-')}\n"
         f"E-Mail: {seller.get('contact_email', '-')}\n"
         f"Telefon: {seller.get('contact_phone', '-')}\n"
-        f"website: {seller.get('website', '-')}\n"
+        f"Webseite: {seller.get('website', '-')}\n"
         f"Stripe-Konto-ID: {seller.get('stripe_account_id', '–')}\n"
         f"Registriert: {'Ja' if seller.get('is_registered') else 'Nein'}\n"
         f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"
