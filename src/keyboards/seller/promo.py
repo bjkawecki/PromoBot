@@ -1,6 +1,14 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
+def get_back_to_promo_menu_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Abbrechen", callback_data="promo_menu")]
+        ]
+    )
+
+
 def get_confirm_create_promo_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
