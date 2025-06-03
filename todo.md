@@ -2,8 +2,6 @@
 
 ## Admin
 
-- seller action: block/unblock
-
 - promos view: list, emphasize status
 - promo view: details with buttons "Blockieren/Freigeben", "Löschen", "Endgültig löschen"
 - damit eine Promo gelöscht werden kann, muss es den Status "deleted" haben

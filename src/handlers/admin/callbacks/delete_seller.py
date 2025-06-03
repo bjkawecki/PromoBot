@@ -47,7 +47,7 @@ async def seller_delete_execute(callback: CallbackQuery):
         await seller_details_menu_callback(callback)
         return
 
-    if seller.get("active"):
+    if seller.get("status") == "active":
         await callback.answer(
             f"⚠️ Verkäufer mit ID {telegram_id} ist noch aktiv und kann daher nicht gelöscht werden.\n"
             "Bitte deaktiviere ihn zuerst.",
