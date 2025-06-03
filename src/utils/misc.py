@@ -62,15 +62,14 @@ SELLER_VALIDATOR_METHODS_MAP = {
 
 
 def get_seller_info(seller: object):
-    status = seller.get("status")
+    seller_status = seller.get("seller_status")
     seller_status_map = {
         "active": "✅ Aktiv",
         "inactive": "🚫 Deaktiviert",
-        "deleted": "🗑 Gelöscht",
     }
-    status = seller_status_map[seller.get("status")]
+    seller_status = seller_status_map[seller.get("seller_status", "active")]
     return (
-        f"<b>Status:</b> {status}\n\n"
+        f"<b>Status:</b> {seller_status}\n\n"
         f"Nutzername: {seller.get('username', '–')}\n"
         f"Telegram-ID: {seller.get('telegram_user_id', '-')}\n"
         f"Unternehmen: {seller.get('company_name', '-')}\n"

@@ -48,7 +48,7 @@ async def seller_details_menu_callback(callback: CallbackQuery):
     seller_info = get_seller_info(seller)
 
     keyboard = get_seller_details_menu_keyboard(
-        telegram_id, seller.get("status", False)
+        telegram_id, seller.get("seller_status")
     )
 
     await callback.message.edit_text(

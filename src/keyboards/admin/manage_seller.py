@@ -33,11 +33,11 @@ def get_manage_sellers_menu_keyboard() -> InlineKeyboardMarkup:
 
 
 def get_seller_details_menu_keyboard(
-    telegram_id: int, status: str
+    telegram_id: int, seller_status: str
 ) -> InlineKeyboardMarkup:
     inline_keyboard = []
 
-    if status == "active":
+    if seller_status == "active":
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
@@ -46,7 +46,7 @@ def get_seller_details_menu_keyboard(
                 )
             ]
         )
-    elif status == "inactive":
+    elif seller_status == "inactive":
         inline_keyboard.append(
             [
                 InlineKeyboardButton(

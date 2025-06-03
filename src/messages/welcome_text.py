@@ -14,15 +14,15 @@ welcome_text = (
 
 def get_role_welcome_message_text(role: str, seller):
     if role == "admin":
-        return "Willkommen, Admin\\!"
+        return "*Willkommen, Admin*\\!\n\n🗂 Verwalte Verkäufer und ihre Promos\\.\n\nAktuell gibt es"
     elif role == "seller":
-        status = seller.get("status")
-        if status == "active" and not seller.get("is_registered", False):
+        seller_status = seller.get("seller_status")
+        if seller_status == "active" and not seller.get("is_registered", False):
             return (
                 "✉️ Du wurdest als *Verkäufer* freigeschaltet\\.\n\n"
                 "*Registriere* dich, um Promos zu erstellen\\."
             )
-        elif status == "inactive" and seller.get("is_registered", False):
+        elif seller_status == "inactive" and seller.get("is_registered", False):
             return (
                 f"Hallo, *{seller.get('display_name')}*\\.\n\n"
                 "🚫 Dein Konto bei PromoBot ist *deaktiviert*\\.\n\n"

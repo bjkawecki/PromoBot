@@ -32,7 +32,7 @@ def get_role_keyboard(role: str, seller) -> InlineKeyboardMarkup:
         return get_admin_keyboard
     elif role == "seller":
         if seller.get("is_registered", False):
-            if seller.get("status") == "active":
+            if seller.get("seller_status") == "active":
                 return get_active_registered_seller_keyboard
             else:
                 return get_inactive_registered_seller_keyboard

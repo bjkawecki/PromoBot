@@ -14,5 +14,6 @@ def get_admin_keyboard():
                     text="📣 Promos", callback_data="admin_promotions_menu"
                 )
             ],
+            [InlineKeyboardButton(text="📊 Statistik", callback_data="admin_stats")],
         ]
     )

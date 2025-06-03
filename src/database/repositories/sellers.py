@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+from boto3.dynamodb.conditions import Attr
 from botocore.exceptions import ClientError
 
 from database.dynamodb import dynamodb
@@ -78,3 +79,35 @@ def get_all_sellers() -> List[Dict]:
     except Exception as e:
         print(f"[ERROR] Fehler beim Abrufen der Verkäufer: {e}")
         return []
+
+
+# Zählt alle Items
+def count_all_items() -> int:
+    count = 0
+    response = table.scan(ProjectionExpression="seller_status")
+    count += len(response.get("Items", []))
+    while "LastEvaluatedKey" in response:
+        response = table.scan(
+            ExclusiveStartKey=response["LastEvaluatedKey"],
+            ProjectionExpression="seller_status",
+        )
+        count += len(response.get("Items", []))
+    return count
+
+
+# Zählt gefilterte Items
+def count_items_filtered(filter_expr) -> int:
+    count = 0
+    response = table.scan(
+        FilterExpression=filter_expr,
+        ProjectionExpression="seller_status",  # Optional: reduziert Rückgabedaten
+    )
+    count += len(response.get("Items", []))
+    while "LastEvaluatedKey" in response:
+        response = table.scan(
+            ExclusiveStartKey=response["LastEvaluatedKey"],
+            FilterExpression=filter_expr,
+            ProjectionExpression="seller_status",
+        )
+        count += len(response.get("Items", []))
+    return count

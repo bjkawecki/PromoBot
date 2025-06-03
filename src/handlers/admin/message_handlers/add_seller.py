@@ -21,7 +21,7 @@ async def save_seller_telegram_id(message: Message, state: FSMContext):
     telegram_user_id = int(telegram_user_id)
     seller_obj = {
         "telegram_user_id": telegram_user_id,
-        "status": "active",
+        "seller_status": "active",
         "registered": False,
         "created_at": datetime.utcnow().isoformat() + "Z",
     }
