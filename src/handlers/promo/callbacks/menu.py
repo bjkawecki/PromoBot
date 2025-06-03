@@ -43,5 +43,5 @@ async def promo_details_menu_callback(callback: CallbackQuery, state: FSMContext
     if not promo:
         await callback.answer("Promo nicht gefunden.")
         return
-    await send_promo_detailview(callback.message, promo)
+    await send_promo_detailview(callback.message, promo, seller_id)
     await callback.answer()
