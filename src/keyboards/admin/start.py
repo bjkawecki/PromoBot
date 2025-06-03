@@ -6,18 +6,12 @@ def get_admin_keyboard():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="➕ Verkäufer hinzufügen",
-                    callback_data="add_seller",
+                    text="👔 Verkäufer", callback_data="admin_sellers_menu"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="📃 Verkäuferliste", callback_data="seller_list_menu"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="📣 Promos", callback_data="display_promotions"
+                    text="📣 Promos", callback_data="admin_promotions_menu"
                 )
             ],
         ]

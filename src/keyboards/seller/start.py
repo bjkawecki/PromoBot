@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def get_registered_seller_keyboard():
+def get_active_registered_seller_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="🛒 Bestellungen", callback_data="list_orders")],
@@ -11,6 +11,14 @@ def get_registered_seller_keyboard():
                     text="👤 Profil", callback_data="update_seller_profile"
                 )
             ],
+            [InlineKeyboardButton(text="❓ Hilfe", callback_data="seller_help_menu")],
+        ]
+    )
+
+
+def get_inactive_registered_seller_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
             [InlineKeyboardButton(text="❓ Hilfe", callback_data="seller_help_menu")],
         ]
     )

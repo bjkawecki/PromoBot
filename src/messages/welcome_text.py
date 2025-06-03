@@ -16,16 +16,17 @@ def get_role_welcome_message_text(role: str, seller):
     if role == "admin":
         return "Willkommen, Admin\\!"
     elif role == "seller":
-        if seller.get("active") and not seller.get("is_registered", False):
+        status = seller.get("status")
+        if status == "active" and not seller.get("is_registered", False):
             return (
                 "✉️ Du wurdest als *Verkäufer* freigeschaltet\\.\n\n"
                 "*Registriere* dich, um Promos zu erstellen\\."
             )
-        elif not seller.get("active") and seller.get("is_registered", False):
+        elif status == "inactive" and seller.get("is_registered", False):
             return (
                 f"Hallo, *{seller.get('display_name')}*\\.\n\n"
-                "🚫 Dein Konto bei PromoBot ist *nicht aktiv*\\.\n\n"
-                "💬 Kontaktiere den *Administrator*, um dein Konto zu aktivieren\\."
+                "🚫 Dein Konto bei PromoBot ist *deaktiviert*\\.\n\n"
+                "💬 Wenn du denkst, dass dein Konto aktiv sein sollte, kontaktiere den *Support*\\."
             )
         else:
             created_promos = count_promos_for_seller(seller.get("telegram_user_id"))

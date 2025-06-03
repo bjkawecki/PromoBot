@@ -62,7 +62,15 @@ SELLER_VALIDATOR_METHODS_MAP = {
 
 
 def get_seller_info(seller: object):
+    status = seller.get("status")
+    seller_status_map = {
+        "active": "✅ Aktiv",
+        "inactive": "🚫 Deaktiviert",
+        "deleted": "🗑 Gelöscht",
+    }
+    status = seller_status_map[seller.get("status")]
     return (
+        f"<b>Status:</b> {status}\n\n"
         f"Nutzername: {seller.get('username', '–')}\n"
         f"Telegram-ID: {seller.get('telegram_user_id', '-')}\n"
         f"Unternehmen: {seller.get('company_name', '-')}\n"
@@ -72,7 +80,6 @@ def get_seller_info(seller: object):
         f"Telefon: {seller.get('contact_phone', '-')}\n"
         f"website: {seller.get('website', '-')}\n"
         f"Stripe-Konto-ID: {seller.get('stripe_account_id', '–')}\n"
-        f"Aktiv: {'Ja' if seller.get('active') else 'Nein'}\n"
         f"Registriert: {'Ja' if seller.get('is_registered') else 'Nein'}\n"
         f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"
     )

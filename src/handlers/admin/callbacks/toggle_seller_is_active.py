@@ -46,12 +46,12 @@ async def confirm_toggle_callback(callback: CallbackQuery):
         await callback.message.answer("❌ Verkäufer nicht gefunden.")
         return
 
-    seller["active"] = True if action == "activate" else False
+    seller["status"] = "active" if action == "activate" else "inactive"
     save_seller(seller)
 
     status_text = (
         "✅ Verkäufer wurde aktiviert."
-        if seller["active"]
+        if seller["status"] == "active"
         else "🚫 Verkäufer wurde deaktiviert."
     )
     await callback.answer(status_text)

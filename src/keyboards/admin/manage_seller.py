@@ -1,12 +1,43 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
+def get_abort_create_seller_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Abbrechen", callback_data="admin_sellers_menu"
+                ),
+            ],
+        ]
+    )
+
+
+def get_manage_sellers_menu_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="➕ Verkäufer hinzufügen",
+                    callback_data="add_seller",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="📃 Verkäuferliste", callback_data="seller_list_menu"
+                )
+            ],
+            [InlineKeyboardButton(text="🔙 Hauptmenu", callback_data="back_to_start")],
+        ]
+    )
+
+
 def get_seller_details_menu_keyboard(
-    telegram_id: int, active: bool
+    telegram_id: int, status: str
 ) -> InlineKeyboardMarkup:
     inline_keyboard = []
 
-    if active:
+    if status == "active":
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
@@ -15,7 +46,7 @@ def get_seller_details_menu_keyboard(
                 )
             ]
         )
-    else:
+    elif status == "inactive":
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
@@ -96,7 +127,7 @@ def get_seller_list_keyboard(sellers: list[dict]) -> InlineKeyboardMarkup:
         )
 
     buttons.append(
-        [InlineKeyboardButton(text="🔙 Zurück", callback_data="back_to_start")]
+        [InlineKeyboardButton(text="🔙 Hauptmenu", callback_data="back_to_start")]
     )
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
@@ -110,6 +141,6 @@ def get_retry_or_abort_keyboard():
                     text="Eingabe wiederholen", callback_data="add_seller"
                 )
             ],
-            [InlineKeyboardButton(text="🔙 Zurück", callback_data="back_to_start")],
+            [InlineKeyboardButton(text="🔙 Hauptmenu", callback_data="back_to_start")],
         ]
     )

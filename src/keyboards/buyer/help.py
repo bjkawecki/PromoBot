@@ -18,7 +18,7 @@ def get_help_options_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="🔐 Datenschutz", callback_data="data_privacy")],
             [
                 InlineKeyboardButton(
-                    text="🔙 Zurück zum Hauptmenu", callback_data="back_to_start"
+                    text="🔙 Hauptmenu", callback_data="back_to_start"
                 ),
             ],
         ]
