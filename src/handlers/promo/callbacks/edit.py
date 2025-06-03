@@ -20,7 +20,7 @@ async def edit_promo_callback(callback: CallbackQuery, state: FSMContext):
     _, promo_id = callback.data.split(":")
     await state.update_data(promo_id=promo_id)
     keyboard = get_edit_promo_keyboard(promo_id, PROMO_FIELD_LABELS)
-    await callback.message.edit_text(
+    await callback.message.answer(
         "<b>Promo bearbeiten</b>\n\nWähle ein Feld zum Bearbeiten:",
         reply_markup=keyboard,
         parse_mode="HTML",

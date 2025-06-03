@@ -42,7 +42,7 @@ async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMConte
         "shipping_costs": data.get("shipping_costs"),
         "channel_id": data.get("channel_id"),
         "start_date": data.get("start_date"),
-        "end_data": data.get("end_date"),
+        "end_date": data.get("end_date"),
         "image": data.get("image", ""),
         "promo_status": "inactive",
     }

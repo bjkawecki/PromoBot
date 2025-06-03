@@ -12,6 +12,17 @@ from utils.validation import (
     validate_url,
 )
 
+promo_status_map = {
+    "active": "✅ Aktiv",
+    "inactive": "🚫 Inaktiv",
+    "deleted": "🗑 Gelöscht",
+}
+promo_status_emoji_map = {
+    "active": "✅",
+    "inactive": "🚫",
+    "deleted": "🗑",
+}
+
 
 def format_datetime(iso_timestamp):
     dt = datetime.fromisoformat(iso_timestamp.replace("Z", "+00:00"))
@@ -85,11 +96,11 @@ def get_seller_info(seller: object):
 
 
 def format_promo_details(promo: object):
-    promo_status = promo.get("promo_status")
+    promo_status = promo_status_map[promo.get("promo_status")]
     return (
         f"<b>🔎 Promo Details</b>\n\n"
         f"<b>{promo.get('display_name')}</b>\n\n"
-        f"<b>Status:</b> {'aktiv ✅' if promo_status == 'active' else 'nicht aktiv ❌'}\n"
+        f"<b>Status:</b> {promo_status}\n"
         f"<b>Preis:</b> {promo.get('price')} €\n"
         f"<b>Versandkosten:</b> {promo.get('shipping_costs')} €\n"
         f"<b>Ausgabekanal:</b> {promo.get('channel_id')}\n"

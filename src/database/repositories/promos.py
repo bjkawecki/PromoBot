@@ -33,6 +33,7 @@ def create_promotion(data: dict):
         "display_message": data.get("display_message"),
         "channel_id": data.get("channel_id"),
         "created_at": datetime.utcnow().isoformat() + "Z",
+        "promo_status": "inactive",
     }
 
     try:

@@ -141,7 +141,7 @@ def get_edit_promo_keyboard(
         [
             InlineKeyboardButton(
                 text="❌ Abbrechen",
-                callback_data=f"promo_detail_menu:{promo_id}",
+                callback_data=f"promo_details_menu:{promo_id}",
             )
         ]
     )
