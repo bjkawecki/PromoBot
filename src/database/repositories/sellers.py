@@ -1,6 +1,5 @@
 from typing import Dict, List
 
-from boto3.dynamodb.conditions import Attr
 from botocore.exceptions import ClientError
 
 from database.dynamodb import dynamodb

@@ -58,7 +58,7 @@ def get_promo_menu_keyboard() -> InlineKeyboardMarkup:
                     callback_data="publish_product_promo",
                 )
             ],
-            [InlineKeyboardButton(text="🔙 Hauptmenu", callback_data="back_to_start")],
+            [InlineKeyboardButton(text="🔙 Hauptmenü", callback_data="back_to_start")],
         ]
     )
 

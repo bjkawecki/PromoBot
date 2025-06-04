@@ -22,7 +22,7 @@ def get_abort_keyboard() -> InlineKeyboardMarkup:
 def get_main_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🔙 Hauptmenu", callback_data="back_to_start")]
+            [InlineKeyboardButton(text="🔙 Hauptmenü", callback_data="back_to_start")]
         ]
     )
 

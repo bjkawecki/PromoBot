@@ -32,6 +32,6 @@ def get_seller_help_menu_keyboard() -> InlineKeyboardMarkup:
 def get_back_to_seller_help_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="⬅️ Hauptmenu", callback_data="seller_help_menu")]
+            [InlineKeyboardButton(text="⬅️ Hauptmenü", callback_data="seller_help_menu")]
         ]
     )

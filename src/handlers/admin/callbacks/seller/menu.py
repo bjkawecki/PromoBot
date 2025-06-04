@@ -1,7 +1,9 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery
 
+from database.repositories.promos import get_promotions_by_seller_id
 from database.repositories.sellers import get_all_sellers, get_seller_by_id
+from keyboards.admin.manage_promos import get_admin_promo_list_keyboard
 from keyboards.admin.manage_seller import (
     get_manage_sellers_menu_keyboard,
     get_seller_details_menu_keyboard,
@@ -53,5 +55,22 @@ async def seller_details_menu_callback(callback: CallbackQuery):
 
     await callback.message.edit_text(
         seller_info, reply_markup=keyboard, parse_mode="HTML"
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("admin_seller_promo_list:"))
+async def seller_promo_list_menu_callback(callback: CallbackQuery):
+    telegram_id = callback.data.split(":")[1]
+    promo_list = get_promotions_by_seller_id(seller_id=int(telegram_id))
+
+    if not promo_list:
+        await callback.answer("❌ Du hast noch keine Promos erstellt.")
+        return
+    keyboard = get_admin_promo_list_keyboard(promo_list)
+    await callback.message.answer(
+        "<b>📢 Promos</b>\n\nWähle eine Promo aus:",
+        reply_markup=keyboard,
+        parse_mode="HTML",
     )
     await callback.answer()
