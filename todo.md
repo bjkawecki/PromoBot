@@ -1,9 +1,5 @@
 # To do
 
-## Admin
-
-- promo list and details view per seller: emphasize status, add buttons "Löschen", "Endgültig löschen"
-
 ## Seller
 
 - help/FAQ:
@@ -22,6 +18,7 @@
 
 ## Refactor
 
+- check for commonly used callbacks
 - move text messages to src/messages, check for redundancy
 
 ## More feature
