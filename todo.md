@@ -2,8 +2,7 @@
 
 ## Admin
 
-- promos view: emphasize status, add buttons "Blockieren/Freigeben", "Löschen", "Endgültig löschen"
-  - damit eine Promo gelöscht werden kann, muss es den Status "deleted" haben
+- promo list and details view per seller: emphasize status, add buttons "Löschen", "Endgültig löschen"
 
 ## Seller
 
@@ -24,3 +23,7 @@
 ## Refactor
 
 - move text messages to src/messages, check for redundancy
+
+## More feature
+
+- add logging

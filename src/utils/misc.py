@@ -105,7 +105,7 @@ def format_promo_details(promo: object):
         f"<b>Versandkosten:</b> {promo.get('shipping_costs')} €\n"
         f"<b>Ausgabekanal:</b> {promo.get('channel_id')}\n"
         f"<b>Startdatum:</b> {promo.get('start_date')}\n"
-        f"<b>Enddatum:</b> {promo.get('end_date', '–')}\n"
+        f"<b>Enddatum:</b> {promo.get('end_date')}\n"
         f"<b>Nachricht:</b>\n{promo.get('display_message')}\n\n"
         f"<b>Beschreibung:</b>\n{promo.get('description')}\n\n"
         f"<b>{'🚫 Promo ist blockiert. Für mehr Informationen wende dich an den Kundenservice.' if promo.get('blocked', False) else ''}</b>"

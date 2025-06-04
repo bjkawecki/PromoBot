@@ -26,14 +26,14 @@ async def statistics_callback(callback: CallbackQuery):
     # Nachricht senden
     message = (
         "<b>PromoBot-Statistik</b>\n\n"
-        f"<b>Verkäufer: {total_sellers}</b>\n"
-        f"📝 Registriert: {registered_sellers}\n"
-        f"✅ Aktiv: {active_sellers}\n"
-        f"🚫 Gesperrt: {inactive_sellers}\n\n"
-        f"<b>Promos: {total_promos}</b>\n"
-        f"✅ Aktiv: {active_promos}\n"
-        f"🚫 Inaktiv: {inactive_promos}\n"
-        f"🗑 Gelöscht: {deleted_promos}"
+        f"<b>Verkäufer: {total_sellers}</b>\n\n"
+        f"📇 registriert: {registered_sellers}\n"
+        f"✅ aktiv: {active_sellers}\n"
+        f"🙅 gesperrt: {inactive_sellers}\n\n"
+        f"<b>Promos: {total_promos}</b>\n\n"
+        f"✅ aktiv: {active_promos}\n"
+        f"🚫 inaktiv: {inactive_promos}\n"
+        f"🗑 gelöscht: {deleted_promos}"
     )
 
     await callback.message.edit_text(

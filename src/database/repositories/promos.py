@@ -21,9 +21,9 @@ def safe_parse_decimal(value, default=Decimal("0.0")) -> Decimal:
 
 def create_promotion(data: dict):
     item = {
-        "promo_id": data.get("promo_id"),  # Sort Key
-        "seller_id": data.get("seller_id"),  # Sort Key
-        "start_date": data.get("start_date"),  # ISO-Format erwartet: '2025-05-26'
+        "promo_id": data.get("promo_id"),
+        "seller_id": data.get("seller_id"),
+        "start_date": data.get("start_date"),
         "end_date": data.get("end_date"),
         "display_name": data.get("display_name"),
         "image": data.get("image"),
@@ -178,10 +178,51 @@ def update_promo_field(promo_id: int, seller_id: str, field: str, new_value: any
 
 def set_promo_status_to_deleted(promo_id: int, seller_id: str):
     try:
-        table.update_item(
+        response = table.update_item(
             Key={"promo_id": promo_id, "seller_id": seller_id},
             UpdateExpression="SET promo_status = :deleted",
             ExpressionAttributeValues={":deleted": "deleted"},
+            ReturnValues="UPDATED_NEW",
         )
-    except Exception as e:
-        print(f"❌ Fehler beim Löschen: {e}")
+        soft_deleted_item = response.get("Attributes")
+        if soft_deleted_item.get("promo_status") == "deleted":
+            print(f"✅ Promo als gelöscht markiert: {promo_id} (Seller: {seller_id})")
+        else:
+            print("⚠️ Kein Item zurückgegeben (möglicherweise war es leer).")
+        return True
+    except ClientError as e:
+        if e.response["Error"]["Code"] == "ConditionalCheckFailedException":
+            print(
+                f"❌ Promo nicht gefunden oder bereits gelöscht: {promo_id} (Seller: {seller_id})"
+            )
+        else:
+            print(
+                f"❌ Fehler beim Löschen der Promo {promo_id} (Seller: {seller_id}): {e.response['Error']['Message']}"
+            )
+        return False
+
+
+def hard_delete_promo(promo_id: str, seller_id: int) -> bool:
+    try:
+        response = table.delete_item(
+            Key={"promo_id": promo_id, "seller_id": seller_id},
+            ConditionExpression="attribute_exists(promo_id)",
+            ReturnValues="ALL_OLD",  # Gibt das gelöschte Item zurück (falls vorhanden)
+        )
+        deleted_item = response.get("Attributes")
+        if deleted_item:
+            print(f"✅ Promo gelöscht: {promo_id} (Seller: {seller_id})")
+        else:
+            print("⚠️ Kein altes Item zurückgegeben (möglicherweise war es leer).")
+        return True
+
+    except ClientError as e:
+        if e.response["Error"]["Code"] == "ConditionalCheckFailedException":
+            print(
+                f"❌ Promo nicht gefunden oder bereits gelöscht: {promo_id} (Seller: {seller_id})"
+            )
+        else:
+            print(
+                f"❌ Fehler beim Löschen der Promo {promo_id} (Seller: {seller_id}): {e.response['Error']['Message']}"
+            )
+        return False

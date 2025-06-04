@@ -24,7 +24,11 @@ async def admin_promo_list_menu_callback(callback: CallbackQuery, state: FSMCont
         await callback.answer("❌ Du hast noch keine Promos erstellt.")
         return
     keyboard = get_admin_promo_list_keyboard(promo_list)
-    await callback.message.answer("Wähle eine Promo aus:", reply_markup=keyboard)
+    await callback.message.answer(
+        "<b>📢 Promos</b>\n\nWähle eine Promo aus:",
+        reply_markup=keyboard,
+        parse_mode="HTML",
+    )
     await callback.answer()
 
 
@@ -35,16 +39,19 @@ async def admin_promo_details_menu_callback(callback: CallbackQuery, state: FSMC
     if not promo:
         await callback.answer("Promo nicht gefunden.")
         return
-    await state.update_data(display_name=promo.get("display_name"))
-    await admin_promo_details(callback.message, promo)
+    await state.update_data(promo=promo)
+    await admin_promo_details(callback.message, state)
     await callback.answer()
 
 
-async def admin_promo_details(message: Message, promo: dict):
+async def admin_promo_details(message: Message, state: FSMContext):
+    data = await state.get_data()
+    promo = data.get("promo")
     file_id = promo.get("telegram_image_file_id")
     image_key = promo.get("image", "")
     seller_id = promo.get("seller_id")
     promo_id = promo.get("promo_id")
+    promo_status = promo.get("promo_status")
     caption = format_promo_details(promo)
 
     try:
@@ -53,7 +60,7 @@ async def admin_promo_details(message: Message, promo: dict):
                 photo=file_id,
                 caption=caption,
                 parse_mode="HTML",
-                reply_markup=get_admin_promo_detailview_keyboard(promo_id),
+                reply_markup=get_admin_promo_detailview_keyboard(promo_status),
             )
         elif image_key:
             image_url = generate_presigned_url(key=image_key)
@@ -61,7 +68,7 @@ async def admin_promo_details(message: Message, promo: dict):
                 photo=image_url,
                 caption=caption,
                 parse_mode="HTML",
-                reply_markup=get_admin_promo_detailview_keyboard(promo_id),
+                reply_markup=get_admin_promo_detailview_keyboard(promo_status),
             )
             # Zwischenspeichern des neuen file_id für spätere Nutzung
             new_file_id = msg.photo[-1].file_id
@@ -76,12 +83,13 @@ async def admin_promo_details(message: Message, promo: dict):
             await message.answer(
                 text=caption,
                 parse_mode="HTML",
-                reply_markup=get_admin_promo_detailview_keyboard(promo_id),
+                reply_markup=get_admin_promo_detailview_keyboard(promo_status),
             )
     except Exception as e:
         # Fehler beim Laden/Senden des Bildes – fallback auf Text
         await message.answer(
+            f"Fehler: {e}"
             f"⚠️ Bild konnte nicht geladen werden, zeige nur Text:\n\n{caption}",
             parse_mode="HTML",
-            reply_markup=get_admin_promo_detailview_keyboard(promo_id),
+            reply_markup=get_admin_promo_detailview_keyboard(promo_status),
         )
