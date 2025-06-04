@@ -85,6 +85,38 @@ def count_promos_for_seller(seller_id_raw: int) -> int:
     return len(response.get("Items", []))
 
 
+# Zählt alle Items
+def count_all_promos() -> int:
+    count = 0
+    response = table.scan(ProjectionExpression="promo_status")
+    count += len(response.get("Items", []))
+    while "LastEvaluatedKey" in response:
+        response = table.scan(
+            ExclusiveStartKey=response["LastEvaluatedKey"],
+            ProjectionExpression="promo_status",
+        )
+        count += len(response.get("Items", []))
+    return count
+
+
+# Zählt gefilterte Items
+def count_promos_filtered(filter_expr) -> int:
+    count = 0
+    response = table.scan(
+        FilterExpression=filter_expr,
+        ProjectionExpression="promo_status",  # Optional: reduziert Rückgabedaten
+    )
+    count += len(response.get("Items", []))
+    while "LastEvaluatedKey" in response:
+        response = table.scan(
+            ExclusiveStartKey=response["LastEvaluatedKey"],
+            FilterExpression=filter_expr,
+            ProjectionExpression="promo_status",
+        )
+        count += len(response.get("Items", []))
+    return count
+
+
 def count_active_promos_for_seller(seller_id: int) -> int:
     from datetime import date
 

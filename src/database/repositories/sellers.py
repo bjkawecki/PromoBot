@@ -82,7 +82,7 @@ def get_all_sellers() -> List[Dict]:
 
 
 # Zählt alle Items
-def count_all_items() -> int:
+def count_all_sellers() -> int:
     count = 0
     response = table.scan(ProjectionExpression="seller_status")
     count += len(response.get("Items", []))
@@ -96,7 +96,7 @@ def count_all_items() -> int:
 
 
 # Zählt gefilterte Items
-def count_items_filtered(filter_expr) -> int:
+def count_sellers_filtered(filter_expr) -> int:
     count = 0
     response = table.scan(
         FilterExpression=filter_expr,
