@@ -21,7 +21,7 @@ router = Router()
 async def admin_promo_list_menu_callback(callback: CallbackQuery, state: FSMContext):
     promo_list = get_promotion_list()
     if not promo_list:
-        await callback.answer("❌ Du hast noch keine Promos erstellt.")
+        await callback.answer("❌ Verkäufer hat noch keine Promos erstellt.")
         return
     keyboard = get_admin_promo_list_keyboard(promo_list)
     await callback.message.answer(

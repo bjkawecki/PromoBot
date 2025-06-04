@@ -65,7 +65,7 @@ async def seller_promo_list_menu_callback(callback: CallbackQuery):
     promo_list = get_promotions_by_seller_id(seller_id=int(telegram_id))
 
     if not promo_list:
-        await callback.answer("❌ Du hast noch keine Promos erstellt.")
+        await callback.answer("❌ Verkäufer hat noch keine Promos erstellt.")
         return
     keyboard = get_admin_promo_list_keyboard(promo_list)
     await callback.message.answer(
