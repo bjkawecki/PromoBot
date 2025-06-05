@@ -11,8 +11,9 @@ from keyboards.admin.manage_promos import (
     get_admin_promo_detailview_keyboard,
     get_admin_promo_list_keyboard,
 )
+from messages.admin.info import NO_PROMOS_ANSWER, promo_image_error_message
+from messages.common.promo import PROMO_LIST_MENU, PROMO_NOT_FOUND, format_promo_details
 from services.s3 import generate_presigned_url
-from utils.misc import format_promo_details
 
 router = Router()
 
@@ -21,11 +22,11 @@ router = Router()
 async def admin_promo_list_menu_callback(callback: CallbackQuery, state: FSMContext):
     promo_list = get_promotion_list()
     if not promo_list:
-        await callback.answer("❌ Verkäufer hat noch keine Promos erstellt.")
+        await callback.answer(NO_PROMOS_ANSWER)
         return
     keyboard = get_admin_promo_list_keyboard(promo_list)
     await callback.message.answer(
-        "<b>📢 Promos</b>\n\nWähle eine Promo aus:",
+        PROMO_LIST_MENU,
         reply_markup=keyboard,
         parse_mode="HTML",
     )
@@ -37,7 +38,7 @@ async def admin_promo_details_menu_callback(callback: CallbackQuery, state: FSMC
     promo_id = callback.data.split(":")[1]
     promo = get_promo_by_promo_id(promo_id)
     if not promo:
-        await callback.answer("Promo nicht gefunden.")
+        await callback.answer(PROMO_NOT_FOUND)
         return
     await state.update_data(promo=promo)
     await admin_promo_details(callback.message, state)
@@ -79,17 +80,16 @@ async def admin_promo_details(message: Message, state: FSMContext):
                 promo_id=promo_id,
             )
         else:
-            # 📭 Kein Bild vorhanden – nur Textnachricht senden
+            # Kein Bild vorhanden – nur Textnachricht senden
             await message.answer(
                 text=caption,
                 parse_mode="HTML",
                 reply_markup=get_admin_promo_detailview_keyboard(promo_status),
             )
     except Exception as e:
-        # Fehler beim Laden/Senden des Bildes – fallback auf Text
+        print(e)
         await message.answer(
-            f"Fehler: {e}"
-            f"⚠️ Bild konnte nicht geladen werden, zeige nur Text:\n\n{caption}",
+            promo_image_error_message(caption),
             parse_mode="HTML",
             reply_markup=get_admin_promo_detailview_keyboard(promo_status),
         )

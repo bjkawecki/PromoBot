@@ -23,3 +23,5 @@ data_privacy_text = (
     "Adress\\-, Bestell\\- und Rechnungsdaten werden auf unserem Server nur zur Abwicklung deiner Bestellung gespeichert\\.\n\n"
     "Du kannst die Löschung deiner Daten jederzeit anfordern, indem du im Chat den entsprechenden Button wählst oder Kontakt aufnimmst\\.\n"
 )
+
+buyer_help_menu_message = "<b>❓ Hilfe zur Nutzung von PromoBot</b>\n\nDrück auf das Thema, über das du mehr erfahren möchtest."

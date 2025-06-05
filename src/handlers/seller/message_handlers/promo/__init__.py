@@ -1,9 +1,9 @@
 from aiogram import Router
 
-from handlers.promo.message_handlers.create import (
+from handlers.seller.message_handlers.promo.create import (
     router as create_promo_message_handler_router,
 )
-from handlers.promo.message_handlers.edit import (
+from handlers.seller.message_handlers.promo.edit import (
     router as edit_promo_message_handler_router,
 )
 

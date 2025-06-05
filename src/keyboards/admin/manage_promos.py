@@ -1,5 +1,12 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from messages.keyboards.confirm import (
+    BACK,
+    CANCEL,
+    CONFIRM_DELETE,
+    HARD_DELETE,
+    SOFT_DELETE,
+)
 from utils.misc import promo_status_emoji_map
 
 
@@ -9,7 +16,7 @@ def get_admin_promo_detailview_keyboard(promo_status: str) -> InlineKeyboardMark
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text="💥 Endgültig löschen",
+                    text=HARD_DELETE,
                     callback_data="admin_hard_delete_promo",
                 )
             ]
@@ -18,14 +25,14 @@ def get_admin_promo_detailview_keyboard(promo_status: str) -> InlineKeyboardMark
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text="🗑 Als gelöscht markieren",
+                    text=SOFT_DELETE,
                     callback_data="admin_soft_delete_promo",
                 )
             ]
         )
 
     buttons.append(
-        [InlineKeyboardButton(text="🔙 Zurück", callback_data="admin_promo_list_menu")]
+        [InlineKeyboardButton(text=BACK, callback_data="admin_promo_list_menu")]
     )
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
@@ -48,9 +55,7 @@ def get_admin_promo_list_keyboard(promo_list: list[dict]) -> InlineKeyboardMarku
             ]
         )
 
-    buttons.append(
-        [InlineKeyboardButton(text="🔙 Zurück", callback_data="back_to_start")]
-    )
+    buttons.append([InlineKeyboardButton(text=BACK, callback_data="back_to_start")])
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -60,11 +65,11 @@ def get_confirm_hard_delete_promo_keyboard(promo_id):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="✅ Ja, löschen",
+                    text=CONFIRM_DELETE,
                     callback_data="confirm_hard_delete_promo",
                 ),
                 InlineKeyboardButton(
-                    text="❌ Abbrechen",
+                    text=CANCEL,
                     callback_data=f"cancel_delete_promo:{promo_id}",
                 ),
             ]
@@ -77,11 +82,11 @@ def get_confirm_soft_delete_promo_keyboard(promo_id):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="✅ Ja",
+                    text=CONFIRM_DELETE,
                     callback_data="confirm_soft_delete_promo",
                 ),
                 InlineKeyboardButton(
-                    text="❌ Abbrechen",
+                    text=CANCEL,
                     callback_data=f"cancel_delete_promo:{promo_id}",
                 ),
             ]

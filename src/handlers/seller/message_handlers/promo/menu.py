@@ -2,8 +2,8 @@ from aiogram.types import Message
 
 from database.repositories.promos import update_promo_field
 from keyboards.seller.promo import get_promo_detailview_keyboard
+from messages.common.promo import format_promo_details
 from services.s3 import generate_presigned_url
-from utils.misc import format_promo_details
 
 
 async def send_promo_detailview(message: Message, promo: dict):
@@ -47,8 +47,9 @@ async def send_promo_detailview(message: Message, promo: dict):
             )
     except Exception as e:
         # Fehler beim Laden/Senden des Bildes – fallback auf Text
+        print("⚠️ Bild konnte nicht geladen werden", e)
         await message.answer(
-            f"⚠️ Bild konnte nicht geladen werden, zeige nur Text:\n\n{caption}",
+            caption,
             parse_mode="HTML",
             reply_markup=get_promo_detailview_keyboard(promo_id, promo_status),
         )

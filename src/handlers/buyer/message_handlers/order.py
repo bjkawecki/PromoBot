@@ -22,7 +22,7 @@ async def process_name(message: Message, state: FSMContext):
         await message.answer(
             f"*📫 Adresseingabe*\n\nName: {name}\n\n*Straße und Hausnummer:*",
             reply_markup=get_cancel_collect_order_details_keyboard(),
-            parse_mode="MarkdownV2",
+            parse_mode="HTML",
         )
         await state.set_state(OrderState.street_address)
 
@@ -41,7 +41,7 @@ async def process_street_adress(message: Message, state: FSMContext):
         await message.answer(
             f"*📫 Adresseingabe*\n\nName: {name}\nStraße: {street_address}\n\n*Postleitzahl und Ort:*",
             reply_markup=get_cancel_collect_order_details_keyboard(),
-            parse_mode="MarkdownV2",
+            parse_mode="HTML",
         )
         await state.set_state(OrderState.city)
 
@@ -61,7 +61,7 @@ async def get_city(message: Message, state: FSMContext):
         await message.answer(
             f"*📫 Adresseingabe*\n\nName: {name}\nStraße: {street_address}\nOrt: {city}\n\n*Wie viele Stück möchtest du bestellen?*",
             reply_markup=get_cancel_collect_order_details_keyboard(),
-            parse_mode="MarkdownV2",
+            parse_mode="HTML",
         )
         await state.set_state(OrderState.quantity)
 

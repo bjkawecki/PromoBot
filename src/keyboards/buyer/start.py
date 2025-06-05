@@ -1,14 +1,17 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from messages.keyboards.confirm import (
+    HELP_MENU,
+    PERSONAL_ORDERS,
+    PRODUCT_DESCRIPTION,
+    START_ORDER,
+)
+
 
 def get_buyer_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="Meine Bestellungen", callback_data="buyer_orders"
-                )
-            ]
+            [InlineKeyboardButton(text=PERSONAL_ORDERS, callback_data="buyer_orders")]
         ]
     )
 
@@ -18,18 +21,17 @@ def get_main_menu_deeplink() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="✅ Bestellung starten", callback_data="collect_order_details"
+                    text=START_ORDER, callback_data="collect_order_details"
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="🔍 Produktbeschreibung",
-                    callback_data="product_details_menu",
+                    text=PRODUCT_DESCRIPTION, callback_data="product_details_menu"
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="❓ Hilfe", callback_data="display_bot_help_options"
+                    text=HELP_MENU, callback_data="display_bot_help_options"
                 ),
             ],
         ]

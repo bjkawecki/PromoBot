@@ -4,7 +4,13 @@ from aiogram.types import CallbackQuery
 from database.repositories.sellers import get_seller_by_id, save_seller
 from handlers.admin.callbacks.seller.menu import seller_details_menu_callback
 from keyboards.admin.manage_seller import get_confirm_toggle_keyboard
-from utils.misc import get_seller_info
+from messages.admin.seller import (
+    SELLER_NOT_FOUND,
+    confirm_seller_toggle_answer,
+    confirm_toggle_user_message,
+    format_seller_info,
+)
+from messages.common.info import PROCESS_ABORTED
 
 router = Router()
 
@@ -13,26 +19,20 @@ router = Router()
 async def seller_toggle_is_active_callback(callback: CallbackQuery):
     _, telegram_id, action = callback.data.split(":")
     seller = get_seller_by_id(int(telegram_id))
-
-    seller_info = get_seller_info(seller)
-
-    confirm_text = (
-        "❗️<b>Bist du sicher, dass du den folgenden Verkäufer "
-        f"{'aktivieren' if action == 'activate' else 'deaktivieren'} möchtest?</b>\n\n"
-        f"{seller_info}"
-    )
-
+    seller_info = format_seller_info(seller)
+    confirm_toggle_user_message(action, seller_info)
     keyboard = get_confirm_toggle_keyboard(telegram_id, action)
-
     await callback.message.edit_text(
-        confirm_text, reply_markup=keyboard, parse_mode="HTML"
+        confirm_toggle_user_message(action, seller_info),
+        reply_markup=keyboard,
+        parse_mode="HTML",
     )
     await callback.answer()
 
 
 @router.callback_query(F.data.startswith("cancel_toggle_seller_is_active"))
 async def cancel_toggle_callback(callback: CallbackQuery):
-    await callback.answer("❎ Vorgang abgebrochen.")
+    await callback.answer(PROCESS_ABORTED)
     await seller_details_menu_callback(callback)
     await callback.answer()
 
@@ -43,18 +43,10 @@ async def confirm_toggle_callback(callback: CallbackQuery):
 
     seller = get_seller_by_id(int(telegram_id))
     if not seller:
-        await callback.message.answer("❌ Verkäufer nicht gefunden.")
+        await callback.message.answer(SELLER_NOT_FOUND)
         return
-
     seller["seller_status"] = "active" if action == "activate" else "inactive"
     save_seller(seller)
-
-    status_text = (
-        "✅ Verkäufer wurde aktiviert."
-        if seller["seller_status"] == "active"
-        else "🚫 Verkäufer wurde deaktiviert."
-    )
-    await callback.answer(status_text)
-
+    await callback.answer(confirm_seller_toggle_answer(seller["seller_status"]))
     await seller_details_menu_callback(callback)
     await callback.answer()

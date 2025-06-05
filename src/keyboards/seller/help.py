@@ -1,30 +1,38 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from messages.keyboards.confirm import (
+    MAIN_MENU,
+    SELLER_HELP_MENU_INFO,
+    SELLER_HELP_MENU_PRIVACY,
+    SELLER_HELP_MENU_STRIPE,
+    SELLER_HELP_MENU_SUPPORT,
+)
+
 
 def get_seller_help_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Allgemeine Informationen", callback_data="seller_help:info"
+                    text=SELLER_HELP_MENU_INFO, callback_data="seller_help:info"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="Bezahlen mit Stripe", callback_data="seller_help:stripe"
-                )
-            ],
-            [InlineKeyboardButton(text="Support", callback_data="seller_help:support")],
-            [
-                InlineKeyboardButton(
-                    text="AGB & Datenschutz", callback_data="seller_help:legal"
+                    text=SELLER_HELP_MENU_STRIPE, callback_data="seller_help:stripe"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="⬅️ Zum Hauptmenü", callback_data="back_to_start"
+                    text=SELLER_HELP_MENU_SUPPORT, callback_data="seller_help:support"
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    text=SELLER_HELP_MENU_PRIVACY, callback_data="seller_help:legal"
+                )
+            ],
+            [InlineKeyboardButton(text=MAIN_MENU, callback_data="back_to_start")],
         ]
     )
 
@@ -32,6 +40,6 @@ def get_seller_help_menu_keyboard() -> InlineKeyboardMarkup:
 def get_back_to_seller_help_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="⬅️ Hauptmenü", callback_data="seller_help_menu")]
+            [InlineKeyboardButton(text=MAIN_MENU, callback_data="seller_help_menu")]
         ]
     )

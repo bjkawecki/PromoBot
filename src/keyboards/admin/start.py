@@ -1,19 +1,21 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from messages.keyboards.confirm import PROMO_LIST, SELLER_LIST_BUTTON, STATS
+
 
 def get_admin_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="👔 Verkäufer", callback_data="admin_sellers_menu"
+                    text=SELLER_LIST_BUTTON, callback_data="admin_sellers_menu"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="📣 Promos", callback_data="admin_promo_list_menu"
+                    text=PROMO_LIST, callback_data="admin_promo_list_menu"
                 )
             ],
-            [InlineKeyboardButton(text="📊 Statistik", callback_data="admin_stats")],
+            [InlineKeyboardButton(text=STATS, callback_data="admin_stats")],
         ]
     )

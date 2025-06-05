@@ -5,6 +5,11 @@ from aiogram.types import CallbackQuery
 from database.repositories.promos import hard_delete_promo
 from keyboards.admin.manage_promos import get_confirm_hard_delete_promo_keyboard
 from keyboards.common import get_main_menu_keyboard
+from messages.admin.delete import (
+    confirm_delete_promo_message,
+    delete_error_message,
+    promo_deleted_message,
+)
 
 router = Router()
 
@@ -18,7 +23,7 @@ async def admin_hard_delete_promo_callback(callback: CallbackQuery, state: FSMCo
     keyboard = get_confirm_hard_delete_promo_keyboard(promo_id)
 
     await callback.message.answer(
-        f"❗️Bist du sicher, dass du die Promo <b>'{display_name}'</b> aus der Datenbank löschen willst?",
+        confirm_delete_promo_message(display_name),
         reply_markup=keyboard,
         parse_mode="HTML",
     )
@@ -37,12 +42,12 @@ async def seller_delete_execute(callback: CallbackQuery, state: FSMContext):
         _ = hard_delete_promo(promo_id, seller_id)
         if _:
             await callback.message.edit_text(
-                f"✅ Promo '{display_name}' wurde gelöscht.",
+                promo_deleted_message(display_name),
                 reply_markup=get_main_menu_keyboard(),
             )
         else:
             raise Exception
     except Exception as e:
-        await callback.message.edit_text(f"❌ Fehler beim Löschen: {e}")
+        await callback.message.edit_text(delete_error_message(e))
     await state.clear()
     await callback.answer()

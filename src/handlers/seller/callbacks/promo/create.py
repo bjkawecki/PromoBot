@@ -6,7 +6,9 @@ from aiogram.types import CallbackQuery
 
 from database.repositories.promos import create_promotion
 from keyboards.common import get_abort_keyboard, get_main_menu_keyboard
+from messages.seller.promo import CREATE_PROMO_MESSAGE, confirm_promo_created_message
 from states.seller import PromoState
+from utils.misc import format_new_promo
 
 router = Router()
 
@@ -20,9 +22,7 @@ async def start_create_promo(callback: CallbackQuery, state: FSMContext):
     await state.set_state(PromoState.display_name)
 
     await callback.message.edit_text(
-        "📄 Neue Promo erstellen (1/9)\n\n<b>Wie heißt deine Promo?</b>\n\n"
-        "Der Name wird als <b>Überschrift</b> in der Werbenachricht angezeigt.\n\n"
-        "(Beispiel: 🎄 <i>Weihnachtsangebot 2025</i>)",
+        CREATE_PROMO_MESSAGE,
         reply_markup=get_abort_keyboard(),
         parse_mode="HTML",
     )
@@ -32,25 +32,12 @@ async def start_create_promo(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "confirm_create_promo")
 async def confirm_create_promo_callback(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    new_promo = {
-        "promo_id": data.get("promo_id"),
-        "seller_id": data.get("seller_id"),
-        "display_name": data.get("display_name"),
-        "display_message": data.get("display_message"),
-        "description": data.get("description", ""),
-        "price": data.get("price"),
-        "shipping_costs": data.get("shipping_costs"),
-        "channel_id": data.get("channel_id"),
-        "start_date": data.get("start_date"),
-        "end_date": data.get("end_date"),
-        "image": data.get("image", ""),
-        "promo_status": "inactive",
-    }
+    new_promo = format_new_promo(data)
 
     _, msg = create_promotion(data=new_promo)
     if _:
         await callback.message.edit_text(
-            f"<b>✅ Neue Promo '{data.get('display_name')}' wurde erstellt</b>.",
+            confirm_promo_created_message({data.get("display_name")}),
             reply_markup=get_main_menu_keyboard(),
             parse_mode="HTML",
         )

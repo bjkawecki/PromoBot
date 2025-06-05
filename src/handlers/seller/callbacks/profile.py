@@ -111,7 +111,7 @@ async def update_seller_profile_callback(callback: CallbackQuery):
     await callback.message.edit_text(
         text="📝 Änderung deines Profils\\.\n\nWas möchtest du ändern?",
         reply_markup=get_update_seller_profile_keyboard(),
-        parse_mode="MarkdownV2",
+        parse_mode="HTML",
     )
     await callback.answer()
 

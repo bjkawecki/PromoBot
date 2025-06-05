@@ -7,6 +7,22 @@ from keyboards.seller.promo import (
     get_back_to_promo_menu_keyboard,
     get_confirm_create_promo_keyboard,
 )
+from messages.seller.promo import (
+    CONFIRM_SAVE_PROMO_MESSAGE,
+    PROMO_ADD_CHANNEL_ID,
+    PROMO_ADD_DESCRIPTION,
+    PROMO_ADD_END_DATE,
+    PROMO_ADD_IMAGE,
+    PROMO_ADD_MESSAGE,
+    PROMO_ADD_PRICE,
+    PROMO_ADD_SHIPPING_COSTS,
+    PROMO_ADD_START_DATE,
+    PROMO_IMAGE_FORMAT_ERROR,
+    PROMO_VALIDATE_PRICE_ANSWER,
+    promo_validate_description_answer,
+    promo_validate_message_answer,
+    promo_validate_name_answer,
+)
 from services.s3 import upload_image_to_s3
 from states.seller import PromoState
 from utils.validation import (
@@ -26,19 +42,14 @@ async def create_promo_display_name(message: Message, state: FSMContext):
     max_length = 50
     if not is_valid_length(display_name, min_length=3, max_length=max_length):
         await message.answer(
-            f"❌ Der Titel muss zwischen 3 und {max_length} Zeichen lang sein.\n\n"
-            "Bitte versuche es erneut oder drücke auf 'Abbrechen':",
+            promo_validate_name_answer(max_length),
             reply_markup=get_back_to_promo_menu_keyboard(),
         )
         return
-
     await state.update_data(display_name=display_name)
     await state.set_state(PromoState.display_message)
-
     await message.answer(
-        "📄 Neue Promo erstellen (2/9)\n\n<b>Erstelle eine Nachricht</b>\n\n"
-        "Dieser Text erscheint im Beitrag unter dem Titel.\n\n"
-        "(Beispiel: <i>Bestelle Buch XY mit Gratisversand.</i>)",
+        PROMO_ADD_MESSAGE,
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -49,19 +60,12 @@ async def create_promo_price(message: Message, state: FSMContext):
     display_message = message.text.strip()
     max_length = 100
     if not is_valid_length(display_message, min_length=3, max_length=max_length):
-        await message.answer(
-            f"❌ Der Titel muss zwischen 3 und {max_length} Zeichen lang sein.\n\n"
-            "Bitte versuche es erneut oder drücke auf 'Abbrechen':",
-            reply_markup=get_back_to_promo_menu_keyboard(),
-        )
+        await message.answer(promo_validate_message_answer(max_length))
         return
-
     await state.update_data(display_message=display_message)
     await state.set_state(PromoState.price)
     await message.answer(
-        "📄 Neue Promo erstellen (3/9)\n\n<b>Gib den Preis ohne Versandkosten an</b>\n\n"
-        "Zahl mit maximal zwei Nachkommastellen, ohne Eurozeichen.\n\n"
-        "(Beispiel: 12,99)",
+        PROMO_ADD_PRICE,
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -72,13 +76,12 @@ async def create_promo_shipping_costs(message: Message, state: FSMContext):
     price = message.text.strip()
     price = await validate_decimal(message, price, "Preis")
     if price is None:
+        await message.answer(PROMO_VALIDATE_PRICE_ANSWER)
         return
     await state.update_data(price=price)
     await state.set_state(PromoState.shipping_costs)
     await message.answer(
-        "📄 Neue Promo erstellen (4/9)\n\n<b>Gib die Versandkosten an</b>\n\n"
-        "Zahl mit maximal zwei Nachkommastellen, ohne Eurozeichen.\n\n"
-        "(Beispiel: 3,99)",
+        PROMO_ADD_SHIPPING_COSTS,
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -93,8 +96,7 @@ async def create_promo_description(message: Message, state: FSMContext):
     await state.update_data(shipping_costs=shipping_costs)
     await state.set_state(PromoState.description)
     await message.answer(
-        "📄 Neue Promo erstellen (5/9)\n\n<b>Erstelle eine Beschreibung</b>\n\n"
-        "Ein detaillierte Beschreibung, die Käufer bei der Interaktion mit dem Bot abrufen können.",
+        PROMO_ADD_DESCRIPTION,
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -106,17 +108,14 @@ async def create_promo_channel_id(message: Message, state: FSMContext):
     max_length = 100
     if not is_valid_length(description, min_length=3, max_length=max_length):
         await message.answer(
-            f"❌ Der Titel muss zwischen 3 und {max_length} Zeichen lang sein.\n\n"
-            "Bitte versuche es erneut oder drücke auf 'Abbrechen':",
+            promo_validate_description_answer(max_length),
             reply_markup=get_back_to_promo_menu_keyboard(),
         )
         return
     await state.update_data(description=description)
     await state.set_state(PromoState.channel_id)
     await message.answer(
-        "📄 Neue Promo erstellen (6/9)\n\n<b>Gib die Kanal-Id an</b>\n\n"
-        "Die Id des Ausgabekanals, in den der Bot die Promo posten soll.\n\n"
-        "(Bot und Verkäufer müssen Zugriff auf diesen Kanal haben.)",
+        PROMO_ADD_CHANNEL_ID,
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -131,9 +130,7 @@ async def create_promo_start_date(message: Message, state: FSMContext):
     await state.update_data(channel_id=channel_id)
     await state.set_state(PromoState.start_date)
     await message.answer(
-        "📄 Neue Promo erstellen (7/9)\n\n<b>Gib das Startdatum ein</b>\n\n"
-        "Ab diesem Datum darf die Promo im Ausgabekanal gepostet werden.\n\n"
-        "Die Eingabe muss das Format DD.MM.YYYY haben. (Beispiel: 20.10.2025)",
+        PROMO_ADD_START_DATE,
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -148,9 +145,7 @@ async def create_promo_end_date(message: Message, state: FSMContext):
     await state.update_data(start_date=message.text)
     await state.set_state(PromoState.end_date)
     await message.answer(
-        "📄 Neue Promo erstellen (8/9)\n\n<b>Gib das Startdatum ein</b>\n\n"
-        "Bis zu diesem Datum darf die Promo im Ausgabekanal gepostet werden.\n\n"
-        "Die Eingabe muss das Format DD.MM.YYYY haben. (Beispiel: 01.11.2025)",
+        PROMO_ADD_END_DATE,
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -166,8 +161,7 @@ async def create_promo_image(message: Message, state: FSMContext):
     await state.set_state(PromoState.image)
 
     await message.answer(
-        "📄 Neue Promo erstellen (9/9)\n\n<b>Füge ein Bild hinzu</b>\n\n"
-        "Das Bild wird Teil der Werbenachricht.",
+        PROMO_ADD_IMAGE,
         reply_markup=get_back_to_promo_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -189,7 +183,7 @@ async def create_promo_confirm(message: Message, state: FSMContext):
 
     # Überprüfe Bildformat (jpeg, png)
     if img_format.lower() not in ("jpeg", "png"):
-        await message.answer("Bitte sende ein JPEG- oder PNG-Bild.")
+        await message.answer(PROMO_IMAGE_FORMAT_ERROR)
         return
 
     # Reset BytesIO Cursor, da read() den Pointer verschiebt
@@ -207,7 +201,7 @@ async def create_promo_confirm(message: Message, state: FSMContext):
     # Optional: nächsten State setzen oder Flow abschließen
     await state.set_state(PromoState.confirm)
     await message.answer(
-        "Neue Promo erstellen: abgeschlossen\n\nEingaben speichern?",
+        CONFIRM_SAVE_PROMO_MESSAGE,
         reply_markup=get_confirm_create_promo_keyboard(),
         parse_mode="HTML",
     )

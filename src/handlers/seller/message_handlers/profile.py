@@ -9,6 +9,17 @@ from keyboards.seller.create import (
     get_optional_website_field_keyboard,
 )
 from keyboards.seller.update import get_confirm_update_seller_field_keyboard
+from messages.common.info import NO_VALIDATION_ERROR
+from messages.seller.profile import (
+    confirm_edit_field_message,
+    register_add_company_name_message,
+    register_add_contact_name_message,
+    register_add_email_message,
+    register_add_phone_message,
+    register_add_stripe_account_id,
+    register_add_website_message,
+    registration_completed_message,
+)
 from states.seller import EditSellerField, SellerState
 from utils.misc import SELLER_FIELD_LABELS, SELLER_VALIDATOR_METHODS_MAP
 from utils.validation import (
@@ -32,9 +43,7 @@ async def set_company_name(message: Message, state: FSMContext):
     update_seller_field(user.id, "company_name", company_name)
     await state.set_state(SellerState.display_name)
     await message.edit_text(
-        "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {company_name}\n"
-        "\nBitte gib den <b>Anzeigename</b> deines Unternehmens an:",
+        register_add_company_name_message(company_name),
         reply_markup=get_abort_keyboard(),
         parse_mode="HTML",
     )
@@ -51,10 +60,7 @@ async def set_display_name(message: Message, state: FSMContext):
     update_seller_field(user.id, "display_name", display_name)
     await state.set_state(SellerState.contact_name)
     await message.edit_text(
-        "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('company_name')}\n"
-        f"Anzeigename: {display_name}\n"
-        "\nBitte gib einen <b>Ansprechpartner</b> an:",
+        register_add_contact_name_message(data, display_name),
         reply_markup=get_abort_keyboard(),
         parse_mode="HTML",
     )
@@ -71,11 +77,7 @@ async def set_contact_name(message: Message, state: FSMContext):
     update_seller_field(user.id, "contact_name", contact_name)
     await state.set_state(SellerState.contact_email)
     await message.edit_text(
-        "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('company_name')}\n"
-        f"Anzeigename: {data.get('display_name')}\n"
-        f"Ansprechpartner: {message.text}\n"
-        "\nBitte gib eine <b>geschäftliche E-Mail-Adresse</b> an:",
+        register_add_email_message(data, contact_name),
         reply_markup=get_abort_keyboard(),
         parse_mode="HTML",
     )
@@ -92,11 +94,7 @@ async def set_contact_email_name(message: Message, state: FSMContext):
     update_seller_field(user.id, "contact_email", contact_email)
     await state.set_state(SellerState.contact_phone)
     await message.edit_text(
-        "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('company_name')}\n"
-        f"Anzeigename: {data.get('display_name')}\n"
-        f"E-Mail: {message.text}\n"
-        "\nBitte gib eine <b>geschäftliche Telefonnummer</b> an (optional):",
+        register_add_phone_message(data, contact_email),
         reply_markup=get_optional_phone_field_keyboard(),
         parse_mode="HTML",
     )
@@ -113,12 +111,7 @@ async def set_contact_phone_name(message: Message, state: FSMContext):
     update_seller_field(user.id, "contact_phone", contact_phone)
     await state.set_state(SellerState.website)
     await message.edit_text(
-        "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('company_name')}\n"
-        f"Anzeigename: {data.get('display_name')}\n"
-        f"E-Mail: {data.get('contact_email')}\n"
-        f"Telefon: {data.get('contact_phone', '–')}\n"
-        "\nBitte gib die <b>Webseite</b> deiner Firma an (optional):",
+        register_add_website_message(data, contact_phone),
         reply_markup=get_optional_website_field_keyboard(),
         parse_mode="HTML",
     )
@@ -135,13 +128,7 @@ async def set_website_name(message: Message, state: FSMContext):
     update_seller_field(user.id, "website", website)
     await state.set_state(SellerState.stripe_account_id)
     await message.edit_text(
-        "📝 Registrierung als Verkäufer\n\n"
-        f"Unternehmen: {data.get('company_name')}\n"
-        f"Anzeigename: {data.get('display_name')}\n"
-        f"E-Mail: {data.get('contact_email', '–')}\n"
-        f"Telefon: {data.get('contact_phone', '–')}\n"
-        f"Webseite: {data.get('website', '–')}\n"
-        "\nBitte gib die <b>ID deines Stripe-Kontos</b> an (optional, benötigt für das Starten von Promos):",
+        register_add_stripe_account_id(data),
         reply_markup=get_optional_website_field_keyboard(),
         parse_mode="HTML",
     )
@@ -159,15 +146,7 @@ async def set_stripe_account_id(message: Message, state: FSMContext):
     update_seller_field(user.id, "is_registered", True)
     await state.set_state(SellerState.confirm)
     await message.edit_text(
-        "📝 Registrierung als Verkäufer\n\n"
-        f"Firma: {data.get('company_name')}\n"
-        f"Anzeigename: {data.get('display_name')}\n"
-        f"E-Mail: {data.get('contact_email', '–')}\n"
-        f"Telefon: {data.get('contact_phone', '–')}\n"
-        f"Webseite: {data.get('website', '–')}\n"
-        f"Stripe-Konto-ID: {data.get('stripe_account_id', '–')}\n"
-        "\n✅ <b>Der Registriervorgang als Verkäufer ist abgeschlossen!<b>\n\n"
-        "Du kannst nun <b>Promos</b> hinzufügen oder dein <b>Profil</b> bearbeiten.\n\n",
+        registration_completed_message(data),
         reply_markup=get_main_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -182,7 +161,7 @@ async def receive_new_field_value(message: Message, state: FSMContext):
     validator = SELLER_VALIDATOR_METHODS_MAP.get(field)
 
     if not validator:
-        await message.answer("❌ Für dieses Feld ist keine Validierung definiert.")
+        await message.answer(NO_VALIDATION_ERROR)
         return
 
     # Eingabe validieren
@@ -193,7 +172,7 @@ async def receive_new_field_value(message: Message, state: FSMContext):
     # Erfolg: Nutzer bestätigen lassen
     await state.update_data(new_value=validated_value)
     await message.answer(
-        f"✅ Neuer Wert für <b>{field_label}</b>:\n\n{validated_value}\n\n<b>Bestätigen?</b>",
+        confirm_edit_field_message(field_label, validated_value),
         reply_markup=get_confirm_update_seller_field_keyboard(),
         parse_mode="HTML",
     )

@@ -6,6 +6,7 @@ from aiogram.types import Message
 
 from database.repositories.sellers import save_seller
 from keyboards.admin.start import get_admin_keyboard
+from messages.admin.seller import confirm_saved_seller_answer
 from states.admin import AddSeller
 from utils.validation import validate_telegram_user_id
 
@@ -28,7 +29,7 @@ async def save_seller_telegram_id(message: Message, state: FSMContext):
     save_seller(seller_obj)
 
     await message.answer(
-        f"✅ Neuer Verkäufer mit Telegram-User-ID {telegram_user_id} wurde gespeichert.",
+        confirm_saved_seller_answer(telegram_user_id),
         reply_markup=get_admin_keyboard(),
     )
     await state.clear()

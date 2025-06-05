@@ -9,7 +9,15 @@ from keyboards.admin.manage_seller import (
     get_seller_details_menu_keyboard,
     get_seller_list_keyboard,
 )
-from utils.misc import get_seller_info
+from messages.admin.seller import (
+    ADMIN_SELLERS_MENU,
+    CHOOSE_SELLER,
+    NO_REGISTERED_SELLERS,
+    NO_SELLER_PROMOS,
+    SELLER_NOT_FOUND,
+    format_seller_info,
+)
+from messages.common.promo import PROMO_LIST_MENU
 
 router = Router()
 
@@ -17,7 +25,7 @@ router = Router()
 @router.callback_query(F.data == "admin_sellers_menu")
 async def admin_seller_menu_callback(callback: CallbackQuery):
     await callback.message.edit_text(
-        "<b>👔 Verkäufer-Menü</b>",
+        ADMIN_SELLERS_MENU,
         reply_markup=get_manage_sellers_menu_keyboard(),
         parse_mode="HTML",
     )
@@ -29,13 +37,11 @@ async def seller_list_menu_callback(callback: CallbackQuery):
     seller_list = get_all_sellers()
 
     if not seller_list:
-        await callback.answer("❌ Es sind noch keine Verkäufer registriert.")
+        await callback.answer(NO_REGISTERED_SELLERS)
         return
 
     keyboard = get_seller_list_keyboard(seller_list)
-    await callback.message.edit_text(
-        "Wähle einen Verkäufer aus:", reply_markup=keyboard
-    )
+    await callback.message.edit_text(CHOOSE_SELLER, reply_markup=keyboard)
     await callback.answer()
 
 
@@ -44,10 +50,10 @@ async def seller_details_menu_callback(callback: CallbackQuery):
     telegram_id = callback.data.split(":")[1]
     seller = get_seller_by_id(int(telegram_id))
     if not seller:
-        await callback.message.answer("Verkäufer nicht gefunden.")
+        await callback.message.answer(SELLER_NOT_FOUND)
         return
 
-    seller_info = get_seller_info(seller)
+    seller_info = format_seller_info(seller)
 
     keyboard = get_seller_details_menu_keyboard(
         telegram_id, seller.get("seller_status")
@@ -65,11 +71,11 @@ async def seller_promo_list_menu_callback(callback: CallbackQuery):
     promo_list = get_promotions_by_seller_id(seller_id=int(telegram_id))
 
     if not promo_list:
-        await callback.answer("❌ Verkäufer hat noch keine Promos erstellt.")
+        await callback.answer(NO_SELLER_PROMOS)
         return
     keyboard = get_admin_promo_list_keyboard(promo_list)
     await callback.message.answer(
-        "<b>📢 Promos</b>\n\nWähle eine Promo aus:",
+        PROMO_LIST_MENU,
         reply_markup=keyboard,
         parse_mode="HTML",
     )

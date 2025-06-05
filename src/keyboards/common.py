@@ -7,13 +7,14 @@ from keyboards.seller.start import (
     get_inactive_registered_seller_keyboard,
     get_unregistered_seller_keyboard,
 )
+from messages.keyboards.confirm import BACK, CANCEL, MAIN_MENU, promo_name_button
 
 
 def get_abort_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="Abbrechen", callback_data="back_to_start"),
+                InlineKeyboardButton(text=CANCEL, callback_data="back_to_start"),
             ],
         ]
     )
@@ -22,7 +23,7 @@ def get_abort_keyboard() -> InlineKeyboardMarkup:
 def get_main_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🔙 Hauptmenü", callback_data="back_to_start")]
+            [InlineKeyboardButton(text=MAIN_MENU, callback_data="back_to_start")]
         ]
     )
 
@@ -46,17 +47,15 @@ def get_promo_list_keyboard(promo_list: list[dict]) -> InlineKeyboardMarkup:
 
     for promo in promo_list:
         promo_id = promo.get("promo_id")
-        display_name = promo.get("display_name")
-        button_text = f" {display_name}"
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text=button_text,
+                    text=promo_name_button(promo),
                     callback_data=f"promo_details_menu:{promo_id}",
                 )
             ]
         )
 
-    buttons.append([InlineKeyboardButton(text="🔙 Zurück", callback_data="promo_menu")])
+    buttons.append([InlineKeyboardButton(text=BACK, callback_data="promo_menu")])
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)

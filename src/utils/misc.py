@@ -12,11 +12,6 @@ from utils.validation import (
     validate_url,
 )
 
-promo_status_map = {
-    "active": "✅ Aktiv",
-    "inactive": "🚫 Inaktiv",
-    "deleted": "🗑 Gelöscht",
-}
 promo_status_emoji_map = {
     "active": "✅",
     "inactive": "🚫",
@@ -72,46 +67,6 @@ SELLER_VALIDATOR_METHODS_MAP = {
 }
 
 
-def get_seller_info(seller: object):
-    seller_status = seller.get("seller_status")
-    seller_status_map = {
-        "active": "✅ Aktiv",
-        "inactive": "🚫 Deaktiviert",
-    }
-    seller_status = seller_status_map[seller.get("seller_status", "active")]
-    return (
-        f"<b>Status:</b> {seller_status}\n\n"
-        f"Nutzername: {seller.get('username', '–')}\n"
-        f"Telegram-ID: {seller.get('telegram_user_id', '-')}\n"
-        f"Unternehmen: {seller.get('company_name', '-')}\n"
-        f"Anzeigename: {seller.get('display_name', '-')}\n"
-        f"Ansprechperson: {seller.get('contact_name', '-')}\n"
-        f"E-Mail: {seller.get('contact_email', '-')}\n"
-        f"Telefon: {seller.get('contact_phone', '-')}\n"
-        f"Webseite: {seller.get('website', '-')}\n"
-        f"Stripe-Konto-ID: {seller.get('stripe_account_id', '–')}\n"
-        f"Registriert: {'Ja' if seller.get('is_registered') else 'Nein'}\n"
-        f"Hinzugefügt: {format_datetime(seller.get('created_at'))}"
-    )
-
-
-def format_promo_details(promo: object):
-    promo_status = promo_status_map[promo.get("promo_status")]
-    return (
-        f"<b>🔎 Promo Details</b>\n\n"
-        f"<b>{promo.get('display_name')}</b>\n\n"
-        f"<b>Status:</b> {promo_status}\n"
-        f"<b>Preis:</b> {promo.get('price')} €\n"
-        f"<b>Versandkosten:</b> {promo.get('shipping_costs')} €\n"
-        f"<b>Ausgabekanal:</b> {promo.get('channel_id')}\n"
-        f"<b>Startdatum:</b> {promo.get('start_date')}\n"
-        f"<b>Enddatum:</b> {promo.get('end_date')}\n"
-        f"<b>Nachricht:</b>\n{promo.get('display_message')}\n\n"
-        f"<b>Beschreibung:</b>\n{promo.get('description')}\n\n"
-        f"<b>{'🚫 Promo ist blockiert. Für mehr Informationen wende dich an den Kundenservice.' if promo.get('blocked', False) else ''}</b>"
-    )
-
-
 PROMO_FIELD_LABELS = {
     "display_name": "Name",
     "price": "Preis",
@@ -136,3 +91,20 @@ PROMO_VALIDATOR_MAP = {
     "message": validate_string_length_max_50,
     "description": validate_string_length_max_100,
 }
+
+
+def format_new_promo(data):
+    return {
+        "promo_id": data.get("promo_id"),
+        "seller_id": data.get("seller_id"),
+        "display_name": data.get("display_name"),
+        "display_message": data.get("display_message"),
+        "description": data.get("description", ""),
+        "price": data.get("price"),
+        "shipping_costs": data.get("shipping_costs"),
+        "channel_id": data.get("channel_id"),
+        "start_date": data.get("start_date"),
+        "end_date": data.get("end_date"),
+        "image": data.get("image", ""),
+        "promo_status": "inactive",
+    }

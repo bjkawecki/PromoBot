@@ -5,7 +5,7 @@ from keyboards.seller.help import (
     get_back_to_seller_help_menu_keyboard,
     get_seller_help_menu_keyboard,
 )
-from messages.seller import HELP_TOPICS
+from messages.seller.help import HELP_TOPICS
 
 router = Router()
 

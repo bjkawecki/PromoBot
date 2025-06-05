@@ -1,0 +1,67 @@
+HARD_DELETE = "💥 Endgültig löschen"
+SOFT_DELETE = "🗑 Als gelöscht markieren"
+BACK = "🔙 Zurück"
+CONFIRM_DELETE = "✅ Ja, löschen"
+CANCEL = "❌ Abbrechen"
+ADD_SELLER = "➕ Verkäufer hinzufügen"
+SELLER_LIST = "📃 Verkäuferliste"
+MAIN_MENU = "🔙 Hauptmenü"
+PROMO_LIST = "📣 Promos"
+SELLER_LIST_BUTTON = "👔 Verkäufer"
+DEACTIVATE = "🚫 Deaktivieren"
+ACTIVATE = "✅ Aktivieren"
+DELETE = "🗑 Löschen"
+BACK_TO_LIST = "🔙 Zurück zur Übersicht"
+REPEAT_INPUT = "Eingabe wiederholen"
+STATS = "📊 Statistik"
+PROFILE = "👤 Profil"
+REGISTER_MENU = "📜 Registrieren"
+
+
+def seller_name_or_id_button(seller):
+    telegram_id = seller.get("telegram_user_id")
+    display_name = seller.get("display_name")
+    return f"👤 {display_name}" if display_name else f"🆔 {telegram_id}"
+
+
+def promo_name_button(promo):
+    display_name = promo.get("display_name")
+    return f"{display_name}"
+
+
+HELP_ORDER_AND_PAYMENT = "📦 Bestellung und Bezahlung"
+HELP_DELIVERY_STATUS = "🚚 Abruf des Lieferstatus"
+HELP_PRIVACY = "🔐 Datenschutz"
+CONTINUE_TO_PAYMENT = "✅ Weiter zur Zahlung"
+EDIT_ORDER_DETAILS = "📝 Angaben ändern"
+BACK_TO_OVERVIEW = "🔙 Zurück zur Übersicht"
+STREET_ADDRESS = "Straße/Hausnummer"
+CITY = "PLZ/Ort"
+QUANTITY = "Anzahl"
+NAME = "Name"
+PERSONAL_ORDERS = "Meine Bestellungen"
+START_ORDER = "✅ Bestellung starten"
+PRODUCT_DESCRIPTION = "🔍 Produktbeschreibung"
+HELP_MENU = "❓ Hilfe"
+SKIP = "Überspringen"
+SELLER_HELP_MENU_INFO = "Allgemeine Informationen"
+SELLER_HELP_MENU_STRIPE = "Bezahlen mit Stripe"
+SELLER_HELP_MENU_SUPPORT = "Support"
+SELLER_HELP_MENU_PRIVACY = "AGB & Datenschutz"
+CONFIRM = "✅ Bestätigen"
+ORDER_NOW = "Jetzt bestellen"
+CREATE_PROMO = "➕ Promo erstellen"
+MANAGE_PROMOS = "📁 Promos verwalten"
+PUBLISH_PROMO = "📨 Promo veröffentlichen"
+EDIT_PROMO = "Promo bearbeiten"
+DELETE_PROMO = "Promo löschen"
+SAVE = "✅ Speichern"
+ORDER_LIST = "🛒 Bestellungen"
+
+EDIT_COMPANY_BUTTON = "Unternehmensname"
+EDIT_DISPLAY_BUTTON = "Anzeigename"
+EDIT_CONTACT_BUTTON = "Ansprechpartner"
+EDIT_EMAIL_BUTTON = "E-Mail"
+EDIT_WEBSITE_BUTTON = "Webseite"
+EDIT_PHONE_BUTTON = "Telefon"
+EDIT_STRIPE_ID_BUTTON = "Stripe-Konto-ID"

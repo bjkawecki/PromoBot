@@ -2,6 +2,7 @@
 
 ## Seller
 
+- publish promo
 - help/FAQ:
   - welche Promo Felder man updaten darf
   - Leitfaden für das Erstellen von Promo: Am besten Texte vorbereiten und dann Copy-Paste
@@ -19,8 +20,9 @@
 ## Refactor
 
 - check for commonly used callbacks
-- move text messages to src/messages, check for redundancy
+- replace callback variables (e.g. uuid) with state
+- clear state, where necessary
+- check messages for redundancy
+- replace print() with logging
 
-## More feature
-
-- add logging
+## Deployment

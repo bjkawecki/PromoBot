@@ -3,11 +3,17 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from database.repositories.promos import get_promo_field, update_promo_field
-from handlers.promo.callbacks.menu import seller_promo_list_menu_callback
+from handlers.seller.callbacks.promo.menu import seller_promo_list_menu_callback
 from keyboards.seller.promo import (
     get_abort_edit_promo_field_keyboard,
     get_back_to_promo_detailview_keyboard,
     get_edit_promo_keyboard,
+)
+from messages.common.info import PROCESS_ABORTED, error_saving
+from messages.seller.promo import (
+    CONFIRM_UPDATED_PROMO_ANSWER,
+    EDIT_PROMO_MESSAGE,
+    edit_promo_field_message,
 )
 from states.seller import EditPromoField
 from utils.misc import PROMO_FIELD_LABELS
@@ -21,7 +27,7 @@ async def edit_promo_callback(callback: CallbackQuery, state: FSMContext):
     await state.update_data(promo_id=promo_id)
     keyboard = get_edit_promo_keyboard(promo_id, PROMO_FIELD_LABELS)
     await callback.message.answer(
-        "<b>Promo bearbeiten</b>\n\nWähle ein Feld zum Bearbeiten:",
+        EDIT_PROMO_MESSAGE,
         reply_markup=keyboard,
         parse_mode="HTML",
     )
@@ -35,13 +41,11 @@ async def edit_promo_field_callback(callback: CallbackQuery, state: FSMContext):
     await state.update_data({"field": field})
     data = await state.get_data()
     promo_id = data.get("promo_id")
-    field_value = get_promo_field(promo_id, seller_id, field)
     field_label = PROMO_FIELD_LABELS.get(field)
+    field_value = get_promo_field(promo_id, seller_id, field)
     await state.update_data(promo_id=promo_id, field=field)
     await callback.message.answer(
-        f"<b>Änderung der Promo</b>\n\n"
-        f"<b>{field_label}:</b> {field_value}\n\n"
-        "📝 Bitte mach eine neue Eingabe.",
+        edit_promo_field_message(field_label, field_value),
         reply_markup=get_abort_edit_promo_field_keyboard(promo_id),
         parse_mode="HTML",
     )
@@ -58,9 +62,9 @@ async def confirm_save_callback(callback: CallbackQuery, state: FSMContext):
     new_value = data["new_value"]
     try:
         update_promo_field(promo_id, seller_id, field, new_value)
-        await callback.answer("✅ Promo wurde aktualisiert.")
+        await callback.answer(CONFIRM_UPDATED_PROMO_ANSWER)
     except Exception as e:
-        await callback.message.edit_text(f"❌ Fehler beim Speichern: {e}")
+        await callback.message.edit_text(error_saving(e))
 
     await seller_promo_list_menu_callback(callback)
     await state.clear()
@@ -71,7 +75,7 @@ async def cancel_edit_callback(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     promo_id = data.get("promo_id")
     await callback.message.edit_text(
-        "❌ Bearbeitung abgebrochen.",
+        PROCESS_ABORTED,
         reply_markup=get_back_to_promo_detailview_keyboard(promo_id),
         parse_mode="HTML",
     )

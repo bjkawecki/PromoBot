@@ -1,13 +1,27 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from messages.keyboards.confirm import (
+    ACTIVATE,
+    ADD_SELLER,
+    BACK_TO_LIST,
+    CANCEL,
+    CONFIRM,
+    CONFIRM_DELETE,
+    DEACTIVATE,
+    DELETE,
+    MAIN_MENU,
+    PROMO_LIST,
+    REPEAT_INPUT,
+    SELLER_LIST,
+    seller_name_or_id_button,
+)
+
 
 def get_abort_create_seller_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
-                    text="Abbrechen", callback_data="admin_sellers_menu"
-                ),
+                InlineKeyboardButton(text=CANCEL, callback_data="admin_sellers_menu"),
             ],
         ]
     )
@@ -18,16 +32,12 @@ def get_manage_sellers_menu_keyboard() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="➕ Verkäufer hinzufügen",
+                    text=ADD_SELLER,
                     callback_data="add_seller",
                 )
             ],
-            [
-                InlineKeyboardButton(
-                    text="📃 Verkäuferliste", callback_data="seller_list_menu"
-                )
-            ],
-            [InlineKeyboardButton(text="🔙 Hauptmenü", callback_data="back_to_start")],
+            [InlineKeyboardButton(text=SELLER_LIST, callback_data="seller_list_menu")],
+            [InlineKeyboardButton(text=MAIN_MENU, callback_data="back_to_start")],
         ]
     )
 
@@ -40,7 +50,8 @@ def get_seller_details_menu_keyboard(
     inline_keyboard.append(
         [
             InlineKeyboardButton(
-                text="📣 Promos", callback_data=f"admin_seller_promo_list:{telegram_id}"
+                text=PROMO_LIST,
+                callback_data=f"admin_seller_promo_list:{telegram_id}",
             )
         ]
     )
@@ -49,7 +60,7 @@ def get_seller_details_menu_keyboard(
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
-                    text="🚫 Deaktivieren",
+                    text=DEACTIVATE,
                     callback_data=f"seller_toggle_is_active:{telegram_id}:deactivate",
                 )
             ]
@@ -58,7 +69,7 @@ def get_seller_details_menu_keyboard(
         inline_keyboard.append(
             [
                 InlineKeyboardButton(
-                    text="✅ Aktivieren",
+                    text=ACTIVATE,
                     callback_data=f"seller_toggle_is_active:{telegram_id}:activate",
                 )
             ]
@@ -67,7 +78,7 @@ def get_seller_details_menu_keyboard(
     inline_keyboard.append(
         [
             InlineKeyboardButton(
-                text="🗑 Löschen",
+                text=DELETE,
                 callback_data=f"seller_delete:{telegram_id}",
             )
         ]
@@ -76,7 +87,7 @@ def get_seller_details_menu_keyboard(
     inline_keyboard.append(
         [
             InlineKeyboardButton(
-                text="🔙 Zurück zur Übersicht",
+                text=BACK_TO_LIST,
                 callback_data="seller_list_menu",
             )
         ]
@@ -90,11 +101,11 @@ def get_confirm_toggle_keyboard(telegram_id, action):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="✅ Ja",
+                    text=CONFIRM,
                     callback_data=f"confirm_toggle_seller_is_active:{telegram_id}:{action}",
                 ),
                 InlineKeyboardButton(
-                    text="❌ Abbrechen",
+                    text=CANCEL,
                     callback_data=f"cancel_toggle_seller_is_active:{telegram_id}",
                 ),
             ]
@@ -107,11 +118,11 @@ def get_confirm_delete_seller_keyboard(telegram_id):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="✅ Ja, löschen",
+                    text=CONFIRM_DELETE,
                     callback_data=f"seller_delete_confirm:{telegram_id}",
                 ),
                 InlineKeyboardButton(
-                    text="❌ Abbrechen",
+                    text=CANCEL,
                     callback_data=f"cancel_delete_seller:{telegram_id}",
                 ),
             ]
@@ -124,18 +135,17 @@ def get_seller_list_keyboard(sellers: list[dict]) -> InlineKeyboardMarkup:
 
     for seller in sellers:
         telegram_id = seller.get("telegram_user_id")
-        display_name = seller.get("display_name")
-        button_text = f"👤 {display_name}" if display_name else f"🆔 {telegram_id}"
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text=button_text, callback_data=f"seller_details_menu:{telegram_id}"
+                    text=seller_name_or_id_button(seller),
+                    callback_data=f"seller_details_menu:{telegram_id}",
                 )
             ]
         )
 
     buttons.append(
-        [InlineKeyboardButton(text="🔙 Hauptmenü", callback_data="back_to_start")]
+        [InlineKeyboardButton(text=MAIN_MENU, callback_data="back_to_start")]
     )
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
@@ -144,11 +154,7 @@ def get_seller_list_keyboard(sellers: list[dict]) -> InlineKeyboardMarkup:
 def get_retry_or_abort_keyboard():
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="Eingabe wiederholen", callback_data="add_seller"
-                )
-            ],
-            [InlineKeyboardButton(text="🔙 Hauptmenü", callback_data="back_to_start")],
+            [InlineKeyboardButton(text=REPEAT_INPUT, callback_data="add_seller")],
+            [InlineKeyboardButton(text=MAIN_MENU, callback_data="back_to_start")],
         ]
     )
