@@ -71,7 +71,7 @@ def get_edit_order_details_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text=QUANTITY, callback_data="edit_quantity")],
             [
                 InlineKeyboardButton(
-                    text=BACK_TO_ORDER_OVERVIEW, callback_data="back_to_summary"
+                    text=BACK_TO_OVERVIEW, callback_data="back_to_summary"
                 )
             ],
         ]
